@@ -6,7 +6,7 @@ status: driver-approved-design
 target_card_type: mvu_zod
 target_host: SillyTavern + 酒馆助手(JS-Slash-Runner) ｜ Gemini 3.1 Pro(剧情) + Gemini 3.7 Flash(变量更新) ｜ 绘绘预设 260821稳定版max
 updated: 2026-08-28
-next_gate: 起源层仅剩创始人待补（群名已定「但为君故」）→ INC/MOD 增量与 CoT 部署设计 → schema/InitialVariables/R1/R2 实现 → ACC-005 离线结构校验
+next_gate: 起源层仅剩创始人待补（群名已定「但为君故」）→ INC(plot侧)/MOD 增量与 CoT 部署设计 → R2 迷雾门卫/R3 正则/组装实现（变量层骨架已按 DEC-024 抄定 drafted）→ ACC-005 离线结构校验
 ---
 
 # Creative authority
@@ -48,6 +48,8 @@ next_gate: 起源层仅剩创始人待补（群名已定「但为君故」）→
 - [DEC-021] **角色四锁定**：楚羽笙（楚楚的笙_unofficial）v1.0 正式稿（`设定集/人设/楚羽笙.txt`，MAT-010）。四项提案转正：软肋注脚（_unofficial=官方版本没人盖章）、终局里程碑（换网名去掉 _unofficial 后缀）、亲密里程碑（通话不挂——房间里有人的声音）、江南商圈"双马尾有钱妹妹"。要点不变：东大金融剧本逃兵、情感真伪型雾、快开慢熟（入门最易毕业最深）、东京擦肩沉秋、线下盲（可能与任何群友擦肩而不自知）。（2026-08-29，驱动）
 - [DEC-022] **第二步执行（交叉回填+关系图+角色层落盘）**：① 五人知识矩阵交叉回填——花奈补 4 格、清寒补 3 格、沉秋补 2 格、楚羽笙（随 v1.0）补冯诺依曼格，诺薇拉档原生齐装；② 群像关系图升级 v1.0（五人 10 对关系+剧情引信 TOP8，`设定集/人设/群像关系图.md`）；③ **角色层世界书落盘**：`lorebooks/起源层/G0` + `lorebooks/角色层/P1-P5`（主词条×5+秘密词条×22，一事实一条目）+ `lorebooks/角色层/README`（词条总表、R2 门控契约、迷雾事实注册表、预算自检）；order 段位扩至 161-190（城市层 191-200 不变）。状态 drafted，待驱动复核+ACC-005。（2026-08-29，agent 执行/驱动授权）
 - [DEC-023] **起源层信息补全**：群名定为**「但为君故」**（出自《短歌行》"但为君故，沉吟至今"）；世界观新增——该 DC 服务器**人数众多、活跃成员不稳定**，五人+主控为当前活跃核心圈（DEC-018 新群员通道的世界观依据，保留节目=核心圈沉淀物）；入群时间表推算采纳：冯诺依曼 2022（早期成员/创始人候选）、顾清寒 2023、cojack 2024、楚楚的笙 2024（东京期）、佐久间眠 2026 上半年、主控 2026 秋（最新）。创始人**后续添加**——起源层唯一剩余待定项。（2026-08-29，驱动）
+
+- [DEC-024] **变量层骨架抄定（MVU · re0 变量系统）**：按驱动指令直接采用 re0 仓库 `变量/` 骨架（2026-08-29 快照）——`世界书/变量列表.txt` 与 `脚本/酒馆助手脚本-MVU.json`（框架加载器，import NLKASHEI/MVU-offline@v1.0.1，testingcf 镜像）**原样照抄**；`[initvar] 初始`、`[mvu_update]变量更新规则`、`[mvu_update]变量输出格式`、`脚本/酒馆助手脚本-ZOD.json` 四件按本卡六容器（DEC-009）重写，schema 版本 `dc-neighbor-state-v1`。re0 与本卡同为 JSONPatch+Zod 方言（限 add/replace/remove/move 四 op），与 DEC-008 同源无冲突；DEC-015 隔离红线在变量层豁免——仅取机制文本，re0 专属容器（轮回/菜月昴/战斗/资产）全部弃用，零 Re:Zero 内容混入。落盘 `变量/`（世界书×4 + 脚本×2 + README），离线校验 19/19 通过，状态 drafted 待复核。工件图偏差（替代契约⑤对应项）：InitialVariables.json→[initvar] 世界书路线；zod_schema.js 维护源→暂由 ZOD 脚本直接承担；update-rules/→[mvu_update] 两件（ENT-040）。关键语义：迷雾=知情者→事实ID→状态，本人对自身事实不入表（每行排除自身前缀格）；好感度 -100~100 默认 50（开局校准 40~60）；稳定键=主控/五人规范短名，网名变化不改键。遗留待裁决：角色层 README"22 格"注释与表格 21 行不符（initvar 暂按 21 格=105 迷雾单元落盘）；R2 取数口径（推荐任一知情者翻转即启用秘密词条，或仅主控行）；变量层 position/order 待组装门核定。（2026-08-29，驱动指令/agent 执行）
 
 ## Proposed
 
@@ -250,7 +252,7 @@ next_gate: 起源层仅剩创始人待补（群名已定「但为君故」）→
     { "id": "ENT-011", "kind": "worldbook", "title": "角色层·秘密子词条×22（迷雾门控：R2按事实ID切换disable，注册表见角色层README）", "claimIds": [], "status": "drafted", "recipient": "plot-model", "sourcePath": "lorebooks/角色层/", "acceptanceIds": ["ACC-005"] },
     { "id": "ENT-020", "kind": "worldbook", "title": "任务层·主线/支线钩子词条（条件注入）", "claimIds": [], "status": "planned", "recipient": "plot-model", "sourcePath": "lorebooks/", "acceptanceIds": ["ACC-005"] },
     { "id": "ENT-030", "kind": "worldbook", "title": "彩蛋层·低频隐藏词条（来源登记+当事人同意）", "claimIds": [], "status": "planned", "recipient": "plot-model", "sourcePath": "lorebooks/", "acceptanceIds": ["ACC-005"] },
-    { "id": "ENT-040", "kind": "worldbook", "title": "变量层·[mvu_update] 变量规则与输出格式 / 状态注入条目", "claimIds": [], "status": "planned", "recipient": "update-model", "sourcePath": "lorebooks/", "acceptanceIds": ["ACC-005"] }
+    { "id": "ENT-040", "kind": "worldbook", "title": "变量层·[mvu_update]变量更新规则/变量输出格式/变量列表 + [initvar]初始（DEC-024；另含 ZOD schema 脚本）", "claimIds": [], "status": "drafted", "recipient": "update-model", "sourcePath": "变量/", "acceptanceIds": ["ACC-005"] }
   ]
 }
 ```

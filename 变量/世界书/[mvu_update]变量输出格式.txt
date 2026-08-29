@@ -1,0 +1,29 @@
+---
+变量输出格式:
+  rule:
+    - 每次回复末尾输出且只输出一个 UpdateVariable 块；正文先完成，变量块置于最后。
+    - Analysis 只写可核对的更新依据与 no change 结论，不输出资料考据、角色知识或隐藏推理。
+    - JSONPatch 必须是合法 JSON 数组，只允许 add、replace、remove、move。
+    - 每个 path 与 from 必须以 / 开头，严格对应中文变量路径，并遵守 JSON Pointer 转义。
+    - 新增动态对象时先 add 完整对象；只有路径已存在时才能 replace；不得使用 delta 或 insert。
+    - 没有状态变化时，JSONPatch 输出空数组 []，不得为了满足格式制造变化。
+    - 所有数值保持 schema 规定范围并使用纯数字。
+    - 首次初始化必须完整处理 user、关系、登场、环境与规则状态；未知信息保留默认值，迷雾不得预翻。
+    - 迷雾翻转必须与正文中的明确揭开场景一一对应；一次揭开多个事实或知情者时，在同一 JSONPatch 数组中完成。
+
+  format: |-
+    <UpdateVariable>
+    <Analysis>
+    0.INITIALIZATION: ${规则.初始化完成是否为 false；若是，本轮完成 user/关系/登场/环境初始化并把标记 replace 为 true；已完成后不得重复初始化或改换主控身份。}
+    1.MIST: ${迷雾格是否翻转；逐格列出事实ID与知情者；是否有正文中的明确揭开场景依据；揭示不可逆。}
+    2.RELATION: ${好感度与关系阶段是否变化；变化是否有互动或事件依据；幅度是否克制；阶段是否只在里程碑或破裂事件翻转。}
+    3.APPEARANCE: ${是否有角色与主控首次线下相遇；登场标记只置 true 不回退。}
+    4.TASKS: ${任务状态或进度备注是否变化；无任务系统变化时写 no change。}
+    5.USER: ${user 容器是否采集或补充了新信息；缺失字段保持未知，禁止编造。}
+    6.ENVIRONMENT: ${日期、时段是否推进；回忆闪回不回拨。}
+    7.INVARIANTS: ${record 键未改动、数值在范围内、op 合法、迷雾翻转有因果依据、无臆造变化、UpdateVariable 为最后一个块。}
+    </Analysis>
+    <JSONPatch>
+    ${只输出合法 JSON 数组；无变化时输出 []}
+    </JSONPatch>
+    </UpdateVariable>
