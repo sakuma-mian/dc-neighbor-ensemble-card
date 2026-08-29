@@ -51,6 +51,8 @@ next_gate: 起源层仅剩创始人待补（群名已定「但为君故」）→
 
 - [DEC-024] **变量层骨架抄定（MVU · re0 变量系统）**：按驱动指令直接采用 re0 仓库 `变量/` 骨架（2026-08-29 快照）——`世界书/变量列表.txt` 与 `脚本/酒馆助手脚本-MVU.json`（框架加载器，import NLKASHEI/MVU-offline@v1.0.1，testingcf 镜像）**原样照抄**；`[initvar] 初始`、`[mvu_update]变量更新规则`、`[mvu_update]变量输出格式`、`脚本/酒馆助手脚本-ZOD.json` 四件按本卡六容器（DEC-009）重写，schema 版本 `dc-neighbor-state-v1`。re0 与本卡同为 JSONPatch+Zod 方言（限 add/replace/remove/move 四 op），与 DEC-008 同源无冲突；DEC-015 隔离红线在变量层豁免——仅取机制文本，re0 专属容器（轮回/菜月昴/战斗/资产）全部弃用，零 Re:Zero 内容混入。落盘 `变量/`（世界书×4 + 脚本×2 + README），离线校验 19/19 通过，状态 drafted 待复核。工件图偏差（替代契约⑤对应项）：InitialVariables.json→[initvar] 世界书路线；zod_schema.js 维护源→暂由 ZOD 脚本直接承担；update-rules/→[mvu_update] 两件（ENT-040）。关键语义：迷雾=知情者→事实ID→状态，本人对自身事实不入表（每行排除自身前缀格）；好感度 -100~100 默认 50（开局校准 40~60）；稳定键=主控/五人规范短名，网名变化不改键。遗留待裁决：角色层 README"22 格"注释与表格 21 行不符（initvar 暂按 21 格=105 迷雾单元落盘）；R2 取数口径（推荐任一知情者翻转即启用秘密词条，或仅主控行）；变量层 position/order 待组装门核定。（2026-08-29，驱动指令/agent 执行）
 
+- [DEC-025] **变量层三项裁决**：① 迷雾格数确认为 **21 格**（花奈 5 + 清寒/沉秋/楚羽笙/诺薇拉各 4）——DEC-022/ENT-011/角色层 README 所记"22"系统计笔误，ENT-011 标题与角色层 README 注释已勘误，initvar 按 21 格=105 迷雾单元维持不变；② R2 取数口径定为**任一知情者翻转即启用**——任一知情者格（知情者≠事实本人）变为已揭示/误信已纠正即把对应秘密词条 disable=false，不采用"仅主控行"；③ 关系好感度基准确认为 **50**（开局校准区间 40~60，initvar/ZOD schema 已一致）。变量/README.md §3 已转 confirmed 口径。（2026-08-29，驱动）
+
 ## Proposed
 
 - [DEC-101] 实现阶段工程布局：六容器 schema 定稿于 `schema/zod_schema.js`；初始变量 `states/InitialVariables.json`；更新规则文本 `update-rules/`；世界书源 `lorebooks/`；脚本 `scripts/`（R1 装载、R2 门卫）；正则与卡源 JSON 组装与校验走 `$sillytavern-card-components` / `$sillytavern-card-pipeline`。待实现开工时随第一批文件提案确认。
@@ -249,7 +251,7 @@ next_gate: 起源层仅剩创始人待补（群名已定「但为君故」）→
     { "id": "ENT-004D", "kind": "worldbook", "title": "场所层·南江大学·校地关系（U4）", "claimIds": [], "status": "confirmed", "recipient": "plot-model", "sourcePath": "lorebooks/场所层-南江大学/U4-校地关系.md", "acceptanceIds": ["ACC-005"] },
     { "id": "ENT-004E", "kind": "worldbook", "title": "场所层·南江大学·学生文化（U5）", "claimIds": [], "status": "confirmed", "recipient": "plot-model", "sourcePath": "lorebooks/场所层-南江大学/U5-学生文化.md", "acceptanceIds": ["ACC-005"] },
     { "id": "ENT-010", "kind": "worldbook", "title": "角色层·角色主词条×5（P1花奈/P2清寒/P3沉秋/P4楚羽笙/P5诺薇拉）", "claimIds": [], "status": "drafted", "recipient": "plot-model", "sourcePath": "lorebooks/角色层/", "acceptanceIds": ["ACC-005"] },
-    { "id": "ENT-011", "kind": "worldbook", "title": "角色层·秘密子词条×22（迷雾门控：R2按事实ID切换disable，注册表见角色层README）", "claimIds": [], "status": "drafted", "recipient": "plot-model", "sourcePath": "lorebooks/角色层/", "acceptanceIds": ["ACC-005"] },
+    { "id": "ENT-011", "kind": "worldbook", "title": "角色层·秘密子词条×21（迷雾门控：R2按事实ID切换disable，任一知情者翻转即启用·DEC-025，注册表见角色层README）", "claimIds": [], "status": "drafted", "recipient": "plot-model", "sourcePath": "lorebooks/角色层/", "acceptanceIds": ["ACC-005"] },
     { "id": "ENT-020", "kind": "worldbook", "title": "任务层·主线/支线钩子词条（条件注入）", "claimIds": [], "status": "planned", "recipient": "plot-model", "sourcePath": "lorebooks/", "acceptanceIds": ["ACC-005"] },
     { "id": "ENT-030", "kind": "worldbook", "title": "彩蛋层·低频隐藏词条（来源登记+当事人同意）", "claimIds": [], "status": "planned", "recipient": "plot-model", "sourcePath": "lorebooks/", "acceptanceIds": ["ACC-005"] },
     { "id": "ENT-040", "kind": "worldbook", "title": "变量层·[mvu_update]变量更新规则/变量输出格式/变量列表 + [initvar]初始（DEC-024；另含 ZOD schema 脚本）", "claimIds": [], "status": "drafted", "recipient": "update-model", "sourcePath": "变量/", "acceptanceIds": ["ACC-005"] }
