@@ -5,8 +5,8 @@ title: 在DC频道里口嗨的群友就住我隔壁？！
 status: driver-approved-design
 target_card_type: mvu_zod
 target_host: SillyTavern + 酒馆助手(JS-Slash-Runner) ｜ Gemini 3.1 Pro(剧情) + Gemini 3.7 Flash(变量更新) ｜ 绘绘预设 260821稳定版max
-updated: 2026-08-28
-next_gate: 起源层仅剩创始人待补（群名已定「但为君故」）→ INC(plot侧)/MOD 增量与 CoT 部署设计 → R2 迷雾门卫/R3 正则/组装实现（变量层骨架已按 DEC-024 抄定 drafted）→ ACC-005 离线结构校验
+updated: 2026-08-29
+next_gate: 起源层仅剩创始人待补（群名已定「但为君故」）→ 协议层 INC/MOD 已按 DEC-026 落盘 drafted（待驱动复核 §9 确认项）→ R2 迷雾门卫/R3 正则（含 UpdateVariable 历史清理增补）/组装实现 → ACC-005 离线结构校验
 ---
 
 # Creative authority
@@ -52,6 +52,8 @@ next_gate: 起源层仅剩创始人待补（群名已定「但为君故」）→
 - [DEC-024] **变量层骨架抄定（MVU · re0 变量系统）**：按驱动指令直接采用 re0 仓库 `变量/` 骨架（2026-08-29 快照）——`世界书/变量列表.txt` 与 `脚本/酒馆助手脚本-MVU.json`（框架加载器，import NLKASHEI/MVU-offline@v1.0.1，testingcf 镜像）**原样照抄**；`[initvar] 初始`、`[mvu_update]变量更新规则`、`[mvu_update]变量输出格式`、`脚本/酒馆助手脚本-ZOD.json` 四件按本卡六容器（DEC-009）重写，schema 版本 `dc-neighbor-state-v1`。re0 与本卡同为 JSONPatch+Zod 方言（限 add/replace/remove/move 四 op），与 DEC-008 同源无冲突；DEC-015 隔离红线在变量层豁免——仅取机制文本，re0 专属容器（轮回/菜月昴/战斗/资产）全部弃用，零 Re:Zero 内容混入。落盘 `变量/`（世界书×4 + 脚本×2 + README），离线校验 19/19 通过，状态 drafted 待复核。工件图偏差（替代契约⑤对应项）：InitialVariables.json→[initvar] 世界书路线；zod_schema.js 维护源→暂由 ZOD 脚本直接承担；update-rules/→[mvu_update] 两件（ENT-040）。关键语义：迷雾=知情者→事实ID→状态，本人对自身事实不入表（每行排除自身前缀格）；好感度 -100~100 默认 50（开局校准 40~60）；稳定键=主控/五人规范短名，网名变化不改键。遗留待裁决：角色层 README"22 格"注释与表格 21 行不符（initvar 暂按 21 格=105 迷雾单元落盘）；R2 取数口径（推荐任一知情者翻转即启用秘密词条，或仅主控行）；变量层 position/order 待组装门核定。（2026-08-29，驱动指令/agent 执行）
 
 - [DEC-025] **变量层三项裁决**：① 迷雾格数确认为 **21 格**（花奈 5 + 清寒/沉秋/楚羽笙/诺薇拉各 4）——DEC-022/ENT-011/角色层 README 所记"22"系统计笔误，ENT-011 标题与角色层 README 注释已勘误，initvar 按 21 格=105 迷雾单元维持不变；② R2 取数口径定为**任一知情者翻转即启用**——任一知情者格（知情者≠事实本人）变为已揭示/误信已纠正即把对应秘密词条 disable=false，不采用"仅主控行"；③ 关系好感度基准确认为 **50**（开局校准区间 40~60，initvar/ZOD schema 已一致）。变量/README.md §3 已转 confirmed 口径。（2026-08-29，驱动）
+
+- [DEC-026] **协议层落盘（INC/MOD 增量与 CoT 部署设计＝绘绘预设适配）**：按用户指令完成绘绘 260821稳定版max 全文体检（prompts/prompt_order/悬浮窗脚本/正则 3871 行）+ 卡侧适配落盘 `lorebooks/协议层/`（README + 条目源 N0-N4），执行 DEC-012（主链复用绘绘通用思维链、卡内不重写）。要点：① **ENT-050 状态对齐**（constant，剧情侧 `{{format_message_variable::stat_data}}` 注入＋无原著模式声明＋备忘卡关闭后的记忆素材约定＋【状态更新】标记单/双模型归属）——契约 §② 未列剧情侧状态注入，属增量提案待驱动确认（INC-1"逐条引用已揭示迷雾格"的执行前提）；② **ENT-051 INC-1 保密纪律 / ENT-052 INC-2 群像调度 / ENT-053 INC-3 初遇路由**：constant、position 0、order 206-210（全局最高段位，方向语义留组装门核对），与通用思维链步.0/0.5/1/4 挂接、与绘绘防·上帝视角/杀·强行揭示/与此同时只引用不复制（去重核对表见协议层 README §3/§4，ACC-005 清单第 4 项预检）；③ **ENT-054 MOD 条件模块**（disable=true 默认，R2 按关系阶段/任务状态翻开关，口径见 N4）；④ **预设开关基线核对单**（协议层 README §6）：默认偏差 4 项——备忘层开→关（DEC-013 既定）、NSFW 强化→标准（DEC-007 既定）、龙族世界开→关（提案）、台词密度少→匀（提案）；⑤ R3 增补需求：promptOnly 正则剥离历史中 `<UpdateVariable>` 块（预设清理正则不认识该标签）。状态 drafted，待驱动复核协议层 README §9 五项确认项 + ACC-005。（2026-08-29，用户指令/agent 执行）
 
 ## Proposed
 
