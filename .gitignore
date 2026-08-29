@@ -1,0 +1,17 @@
+# 白名单式忽略：本仓库只跟踪《在DC频道里口嗨的群友就住我隔壁？！》卡项目成果
+/*
+
+# 卡项目核心成果
+!/.gitignore
+!/creative-authority.md
+!/design-contract.md
+!/material-provenance.md
+!/人设收集模板.md
+!/lorebooks/
+!/设定集/
+!/外发-城建世界书/
+
+# 系统杂项
+Thumbs.db
+desktop.ini
+.DS_Store
