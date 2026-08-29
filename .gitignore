@@ -16,3 +16,7 @@
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# 前端素材与设计稿：驱动裁定（2026-08-29）仅存本地，禁止入库/推送公开仓库
+# （原神官网素材 © miHoYo，非开源；frontend/ 整体不入白名单）
+frontend/
