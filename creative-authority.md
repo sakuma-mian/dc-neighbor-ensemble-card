@@ -55,6 +55,8 @@ next_gate: 起源层仅剩创始人待补（群名已定「但为君故」）→
 
 - [DEC-026] **协议层落盘（INC/MOD 增量与 CoT 部署设计＝绘绘预设适配）**：按用户指令完成绘绘 260821稳定版max 全文体检（prompts/prompt_order/悬浮窗脚本/正则 3871 行）+ 卡侧适配落盘 `lorebooks/协议层/`（README + 条目源 N0-N4），执行 DEC-012（主链复用绘绘通用思维链、卡内不重写）。要点：① **ENT-050 状态对齐**（constant，剧情侧 `{{format_message_variable::stat_data}}` 注入＋无原著模式声明＋备忘卡关闭后的记忆素材约定＋【状态更新】标记单/双模型归属）——契约 §② 未列剧情侧状态注入，属增量提案待驱动确认（INC-1"逐条引用已揭示迷雾格"的执行前提）；② **ENT-051 INC-1 保密纪律 / ENT-052 INC-2 群像调度 / ENT-053 INC-3 初遇路由**：constant、position 0、order 206-210（全局最高段位，方向语义留组装门核对），与通用思维链步.0/0.5/1/4 挂接、与绘绘防·上帝视角/杀·强行揭示/与此同时只引用不复制（去重核对表见协议层 README §3/§4，ACC-005 清单第 4 项预检）；③ **ENT-054 MOD 条件模块**（disable=true 默认，R2 按关系阶段/任务状态翻开关，口径见 N4）；④ **预设开关基线核对单**（协议层 README §6）：默认偏差 4 项——备忘层开→关（DEC-013 既定）、NSFW 强化→标准（DEC-007 既定）、龙族世界开→关（提案）、台词密度少→匀（提案）；⑤ R3 增补需求：promptOnly 正则剥离历史中 `<UpdateVariable>` 块（预设清理正则不认识该标签）。状态 drafted，待驱动复核协议层 README §9 五项确认项 + ACC-005。（2026-08-29，用户指令/agent 执行）
 
+- [DEC-027] **绘绘预设·但为君故适配版 v1.0 生成（用户指令：按适配意见修改并产出可用预设）**：以 MAT-006 原版（`D:\酒馆\`，未改动）为基准经 JSON 级修改生成 `设定集/预设/绘绘260821稳定版max·但为君故适配版v1.0.json`（MAT-013；187 条提示词与原版一一对应，语义 diff 审计 **26 处改动＝预期清单、零其他漂移**）。改动三类：① **档位 10 个开关动作**——备忘层关（DEC-013）、NSFW 强化→标准（DEC-007）、龙族世界关、增强同人向关、台词密度少→匀（提案转正）、文风江南→现代都市白描（提案转正）、防·情感廉价开（**新增裁定**：与 MVU 关系纪律同向的叙事侧加固，协议层 README §6 表外增量，待追认）；② **文本通用化 7 处**（main / 防·角色绝望 / 防·角色工具人×3 / 防·情感廉价 / 通用思维链步.4 结尾主语口径 / 与此同时场景级示例——去路明非、Sakura、凯撒、楚子航、诺诺、夏弥、混血种等龙族指涉；思维链仅改"结尾落在绘梨衣动作"→"角色的动作或台词"一处，六步骨架未动）；③ usage_notes 追加适配日志（该条保持禁用）。**未动**：通用思维链骨架、卡 3.7f prefill、输出格式总规范、全部正则、悬浮窗脚本、nibelungen 包装层；卡侧协议层 ENT-050..054 仍全部在卡世界书（契约 §② 部署契约），预设变体不承载 INC/MOD。使用与回滚说明：[设定集/预设/适配说明.md](设定集/预设/适配说明.md)。（2026-08-29，用户指令/agent 执行）
+
 ## Proposed
 
 - [DEC-101] 实现阶段工程布局：六容器 schema 定稿于 `schema/zod_schema.js`；初始变量 `states/InitialVariables.json`；更新规则文本 `update-rules/`；世界书源 `lorebooks/`；脚本 `scripts/`（R1 装载、R2 门卫）；正则与卡源 JSON 组装与校验走 `$sillytavern-card-components` / `$sillytavern-card-pipeline`。待实现开工时随第一批文件提案确认。
@@ -224,6 +226,17 @@ next_gate: 起源层仅剩创始人待补（群名已定「但为君故」）→
       "privacy": "project-private",
       "authority": "confirmed-character",
       "notes": "第五个角色（收尾位），2026-08-29 驱动锁定 v1.0（详见 DEC-020）。轨道型雾；与花奈为同教室双盲学姐学妹（延毕一年裁定）；院系/校区细节以 MAT-011 为准"
+    },
+    {
+      "id": "MAT-013",
+      "title": "绘绘预设·但为君故适配版 v1.0（运行环境配置）",
+      "sourceType": "derived",
+      "locator": "设定集/预设/绘绘260821稳定版max·但为君故适配版v1.0.json",
+      "contentHash": "sha256:aa9697c51f4339ac4010fdca7c99af358eccc777dd92a5bf89cb7da7de66ad58",
+      "license": "third-party-preset-derivative",
+      "privacy": "project-private",
+      "authority": "reference",
+      "notes": "MAT-006 原版的 JSON 级适配变体（DEC-027）：档位 10 个开关动作 + 文本通用化 7 处 + 更新日志，187 条提示词与原版一一对应，语义 diff 审计 26 处=预期清单；原版未改动。仅运行环境配置，不复制其文本入卡；配套说明 设定集/预设/适配说明.md"
     }
   ]
 }
@@ -256,7 +269,12 @@ next_gate: 起源层仅剩创始人待补（群名已定「但为君故」）→
     { "id": "ENT-011", "kind": "worldbook", "title": "角色层·秘密子词条×21（迷雾门控：R2按事实ID切换disable，任一知情者翻转即启用·DEC-025，注册表见角色层README）", "claimIds": [], "status": "drafted", "recipient": "plot-model", "sourcePath": "lorebooks/角色层/", "acceptanceIds": ["ACC-005"] },
     { "id": "ENT-020", "kind": "worldbook", "title": "任务层·主线/支线钩子词条（条件注入）", "claimIds": [], "status": "planned", "recipient": "plot-model", "sourcePath": "lorebooks/", "acceptanceIds": ["ACC-005"] },
     { "id": "ENT-030", "kind": "worldbook", "title": "彩蛋层·低频隐藏词条（来源登记+当事人同意）", "claimIds": [], "status": "planned", "recipient": "plot-model", "sourcePath": "lorebooks/", "acceptanceIds": ["ACC-005"] },
-    { "id": "ENT-040", "kind": "worldbook", "title": "变量层·[mvu_update]变量更新规则/变量输出格式/变量列表 + [initvar]初始（DEC-024；另含 ZOD schema 脚本）", "claimIds": [], "status": "drafted", "recipient": "update-model", "sourcePath": "变量/", "acceptanceIds": ["ACC-005"] }
+    { "id": "ENT-040", "kind": "worldbook", "title": "变量层·[mvu_update]变量更新规则/变量输出格式/变量列表 + [initvar]初始（DEC-024；另含 ZOD schema 脚本）", "claimIds": [], "status": "drafted", "recipient": "update-model", "sourcePath": "变量/", "acceptanceIds": ["ACC-005"] },
+    { "id": "ENT-050", "kind": "worldbook", "title": "协议层·状态对齐（剧情侧 stat_data 注入·契约增量提案 + 无原著模式 + 备忘关闭后的记忆素材约定，DEC-026）", "claimIds": [], "status": "drafted", "recipient": "plot-model", "sourcePath": "lorebooks/协议层/N0-状态对齐.md", "acceptanceIds": ["ACC-005"] },
+    { "id": "ENT-051", "kind": "worldbook", "title": "协议层·INC-1 保密纪律（对接通用思维链步.0，重迷雾收窄，DEC-012/026）", "claimIds": [], "status": "drafted", "recipient": "plot-model", "sourcePath": "lorebooks/协议层/N1-INC1保密纪律.md", "acceptanceIds": ["ACC-005"] },
+    { "id": "ENT-052", "kind": "worldbook", "title": "协议层·INC-2 群像调度（出场控制/反应三表/线上线下两套调度，DEC-026）", "claimIds": [], "status": "drafted", "recipient": "plot-model", "sourcePath": "lorebooks/协议层/N2-INC2群像调度.md", "acceptanceIds": ["ACC-005"] },
+    { "id": "ENT-053", "kind": "worldbook", "title": "协议层·INC-3 初遇路由（user 人设→五轴路由表，DEC-005/026）", "claimIds": [], "status": "drafted", "recipient": "plot-model", "sourcePath": "lorebooks/协议层/N3-INC3初遇路由.md", "acceptanceIds": ["ACC-005"] },
+    { "id": "ENT-054", "kind": "worldbook", "title": "协议层·MOD 条件模块（MOD-A 攻略事件/MOD-B 任务钩子；disable 默认 true，R2 翻开关，DEC-026）", "claimIds": [], "status": "drafted", "recipient": "plot-model", "sourcePath": "lorebooks/协议层/N4-MOD条件模块.md", "acceptanceIds": ["ACC-005"] }
   ]
 }
 ```
