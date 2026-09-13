@@ -1,0 +1,10 @@
+const fs=require('node:fs');
+const path=require('node:path');
+const base=__dirname;
+const read=p=>fs.readFileSync(path.join(base,p),'utf8');
+const assets={};
+for(const name of ['hana','qing','qiu','chu','nuo','city'])assets[name]='data:image/png;base64,'+fs.readFileSync(path.join(base,'assets',name+'.png')).toString('base64');
+let html=read('index.html').replace('<link rel="stylesheet" href="source/style.css">',()=>'<style>'+read('source/style.css')+'</style>');
+html=html.replace('<script src="source/data.js"></script>',()=>'<script>window.NightArchiveAssets='+JSON.stringify(assets)+';</script>\n<script>'+read('source/data.js').replace(/<\/script/gi,'<\\/script')+'</script>');
+html=html.replace('<script src="source/app.js"></script>',()=>'<script>'+read('source/app.js').replace(/<\/script/gi,'<\\/script')+'</script>');
+const out=path.resolve(base,'..','但为君故-离线前端.html');fs.writeFileSync(out,html);console.log(out);
