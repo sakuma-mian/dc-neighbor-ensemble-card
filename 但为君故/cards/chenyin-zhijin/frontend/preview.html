@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>夜航档案 · 设计预览 v2（美化版）— 但为君故 · 沉吟至今</title>
+<style>
+/* ══════════════════════════════════════════════════════════════
+   《但为君故 · 沉吟至今》· 前端设计令牌（夜航档案）v2 美化版
+   ── v2 相对 v1 的变化 ──
+   1. 增加「质感层」：面板细网格纹理、档案页噪点、面纱斜线遮罩（全部 CSS 自绘）
+   2. 增加「装饰构件」：面板角标、印章标记、条上刻度、硬边内阴影
+   3. 引入 8 枚 Lucide 图标（内联 SVG，currentColor 继承状态色）
+      · 许可：ISC（lucide-static v1.45.0）· 部分图标源自 Feather(MIT)
+      · 署名写入 creator_notes 的第三方声明
+   4. 状态栏的图标仅用于「字段标签」，不进入数值行——保证扫读不被装饰干扰
+   ══════════════════════════════════════════════════════════════ */
+.nd-scope {
+  /* 颜色令牌见下方主题块：.nd-scope[data-theme="archive"] / [data-theme="cyan"] */
+  /* 字体 */
+  --nd-font: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Source Han Sans SC", system-ui, sans-serif;
+  --nd-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --nd-fs-xl: 17px; --nd-fs-lg: 15px; --nd-fs-md: 13px; --nd-fs-sm: 12px; --nd-fs-xs: 11px;
+  --nd-lh-tight: 1.5; --nd-lh: 1.75;
+  --nd-ls-label: .18em; --nd-ls-name: .08em;
+  --nd-num: tabular-nums;
+  --nd-sp-1: 4px; --nd-sp-2: 8px; --nd-sp-3: 12px; --nd-sp-4: 16px; --nd-sp-5: 22px; --nd-sp-6: 30px;
+  --nd-radius: 2px; --nd-tap: 44px;
+  --nd-panel-w: 680px; --nd-overlay-w: 1080px; --nd-bar-h: 5px;
+
+  /* ── 质感层（v2）：全部为 CSS/内联 SVG 自绘，零外部资源 ── */
+  --nd-grid-line: rgba(232,228,217,.020);          /* 面板细网格 */
+  --nd-noise: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  --nd-hatch: repeating-linear-gradient(135deg, rgba(232,228,217,.055) 0 1px, transparent 1px 7px);
+
+  box-sizing: border-box; margin: 0; padding: 0;
+  background: var(--nd-bg-deep); color: var(--nd-text);
+  font-family: var(--nd-font); font-size: var(--nd-fs-md); line-height: var(--nd-lh);
+  min-height: 100%;
+}
+
+/* ══ 主题 A · 夜航档案（暖 · 档案纸 + 印章红） ══
+   实测对比度（对 #101A22）：text 13.86 / dim 8.30 / mute 5.13 /
+   warn 8.67 / seal 4.68 / safe 6.68 —— 全部 ≥ AA */
+.nd-scope[data-theme="archive"] {
+  --nd-bg-deep:   #0A1218;
+  --nd-bg-panel:  #101A22;
+  --nd-bg-raise:  #16232C;
+  --nd-line:      #24343F;
+  --nd-line-strong: #33454F;
+  --nd-line-soft: #1A2831;
+  --nd-text:      #E8E4D9;
+  --nd-text-dim:  #A8B4BA;
+  --nd-text-mute: #7C8D97;
+  --nd-warn:      #DCB045;
+  --nd-seal:      #D4604F;
+  --nd-safe:      #7FA98F;
+  --nd-cyan:      #7FB8C4;   /* 该主题下仅作冷色点缀，非主色 */
+}
+
+/* ══ 主题 B · 青冷（科技冷感 · 纯自绘，不使用任何第三方素材） ══
+   实测对比度（对 #0B161C）：text 15.87 / dim 8.97 / mute 5.10 /
+   cyan 10.46 / safe 8.42 / warn 8.46 / seal 5.21 —— 全部 ≥ AA
+   ⚠ 已知限制：safe(#74C08A 绿) 与 warn(#D9A93C 黄) 明度比 = 1.00:1（完全相同）
+     因此本主题下「文字 + 形状」是强制要求，颜色不得作为唯一线索 */
+.nd-scope[data-theme="cyan"] {
+  --nd-bg-deep:   #060E12;
+  --nd-bg-panel:  #0B161C;
+  --nd-bg-raise:  #12222A;
+  --nd-line:      #1B323B;
+  --nd-line-strong: #2A4E5A;
+  --nd-line-soft: #14262E;
+  --nd-text:      #E4F1F4;
+  --nd-text-dim:  #9FBAC2;
+  --nd-text-mute: #6E8C95;
+  --nd-warn:      #D9A93C;
+  --nd-seal:      #E06055;
+  --nd-safe:      #74C08A;
+  --nd-cyan:      #5FD4E0;   /* 主色：仅用于装饰、标签与描边 */
+}
+
+.nd-scope *, .nd-scope *::before, .nd-scope *::after { box-sizing: border-box; }
+html, body { background: #0A1218; margin: 0; padding: 0; }
+
+/* ── 图标（Lucide 内联，8 枚） ── */
+.nd-ico { width: 13px; height: 13px; flex: none; stroke: currentColor; stroke-width: 2; fill: none;
+  stroke-linecap: round; stroke-linejoin: round; vertical-align: -2px; opacity: .9; }
+.nd-ico.lg { width: 15px; height: 15px; }
+
+/* ── 预览页外壳（不属于卡内实现） ── */
+.nd-pv { position: relative; max-width: var(--nd-overlay-w); margin: 0 auto; padding: var(--nd-sp-6) var(--nd-sp-5) 80px; }
+/* 档案页级噪点：极淡，叠在最底层 */
+.nd-pv::before { content: ""; position: fixed; inset: 0; background-image: var(--nd-noise); opacity: .035;
+  pointer-events: none; z-index: 0; }
+.nd-pv > * { position: relative; z-index: 1; }
+.nd-pv-h { display: flex; align-items: baseline; gap: var(--nd-sp-3); border-bottom: 1px solid var(--nd-line); padding-bottom: var(--nd-sp-3); margin-bottom: var(--nd-sp-3); }
+.nd-pv-h h1 { font-size: var(--nd-fs-xl); letter-spacing: var(--nd-ls-label); font-weight: 700; margin: 0; }
+.nd-pv-h .sub { font-size: var(--nd-fs-xs); color: var(--nd-text-mute); letter-spacing: var(--nd-ls-label); }
+.nd-pv-sec { margin-top: var(--nd-sp-6); }
+.nd-pv-sec > h2 { font-size: var(--nd-fs-lg); font-weight: 600; letter-spacing: var(--nd-ls-label); margin: 0 0 var(--nd-sp-1); color: var(--nd-text); display: flex; align-items: center; gap: var(--nd-sp-2); }
+.nd-pv-sec > h2::before { content: "▍"; color: var(--nd-text-mute); font-weight: 400; }
+.nd-pv-sec > p.note { font-size: var(--nd-fs-xs); color: var(--nd-text-mute); margin: 0 0 var(--nd-sp-4); letter-spacing: .06em; }
+
+/* ── 构件：面板（v2 增加网格纹理 + 角标 + 内阴影） ── */
+.nd-panel { position: relative; padding: var(--nd-sp-3) var(--nd-sp-4);
+  background-color: var(--nd-bg-panel);
+  background-image: repeating-linear-gradient(0deg, var(--nd-grid-line) 0 1px, transparent 1px 9px),
+                    repeating-linear-gradient(90deg, var(--nd-grid-line) 0 1px, transparent 1px 9px);
+  border-top: 1px solid var(--nd-line); border-left: 3px solid var(--nd-line);
+  box-shadow: inset 0 1px 0 rgba(232,228,217,.035); }
+/* 角标（右上）：档案卡的裁切记号 */
+.nd-panel::after { content: ""; position: absolute; right: 5px; top: 5px; width: 9px; height: 9px;
+  border-right: 1px solid var(--nd-cyan); border-top: 1px solid var(--nd-cyan); opacity: .6; }
+.nd-panel.is-warn { border-left-color: var(--nd-warn); }
+.nd-panel.is-seal { border-left-color: var(--nd-seal); }
+.nd-panel.is-safe { border-left-color: var(--nd-safe); }
+.nd-panel.plain::after { display: none; }
+
+/* ── 构件：卷宗标签（v2 可带图标） ── */
+.nd-label { font-size: var(--nd-fs-xs); letter-spacing: var(--nd-ls-label); color: var(--nd-text-dim);
+  display: inline-flex; align-items: center; gap: var(--nd-sp-1); }
+.nd-label .u { color: var(--nd-text-mute); letter-spacing: .06em; }
+.nd-label .nd-ico { color: var(--nd-cyan); }   /* 标签图标用主题主色 */
+
+/* ── 构件：数值条（v2 增加刻度） ── */
+.nd-bar { position: relative; height: var(--nd-bar-h); background: var(--nd-bg-raise); overflow: hidden; flex: 1; min-width: 40px;
+  background-image: repeating-linear-gradient(90deg, transparent 0 23.5%, rgba(10,18,24,.75) 23.5% 25%); }
+.nd-bar > i { position: absolute; inset: 0 auto 0 0; display: block; background: var(--nd-safe); }
+.nd-bar > i.is-warn { background: var(--nd-warn); }
+.nd-bar > i.is-seal { background: var(--nd-seal); }
+.nd-bar > i.is-neg  { background: linear-gradient(90deg, #7A4638, var(--nd-seal)); }
+
+/* ── 构件：形状标记 ── */
+.nd-shape { display: inline-block; width: 8px; height: 8px; flex: none; vertical-align: -1px; }
+.nd-shape.s-normal { border: 1px solid var(--nd-text-dim); }
+.nd-shape.s-warn   { border: 1px solid var(--nd-warn); background: linear-gradient(135deg, var(--nd-warn) 0 50%, transparent 50% 100%); }
+.nd-shape.s-danger { background: var(--nd-seal); }
+.nd-shape.s-safe   { border: 1px solid var(--nd-safe); border-radius: 50%; }
+
+/* ── 构件：徽记 ── */
+.nd-tag { display: inline-flex; align-items: center; gap: var(--nd-sp-1); font-size: var(--nd-fs-xs); letter-spacing: .08em;
+  border: 1px solid var(--nd-line); color: var(--nd-text-dim); padding: 1px var(--nd-sp-2); white-space: nowrap; }
+.nd-tag.is-safe { border-color: rgba(127,169,143,.55); color: var(--nd-safe); }
+.nd-tag.is-seal { border-color: rgba(212,96,79,.55); color: var(--nd-seal); }
+.nd-tag.is-off  { border-color: var(--nd-line-soft); color: var(--nd-text-mute); }
+.nd-tag.is-warn { border-color: rgba(220,176,69,.5); color: var(--nd-warn); }
+
+/* ── 装饰：印章标记（v2 新增 · 世界状态专用） ── */
+.nd-stamp { width: 54px; height: 54px; flex: none; display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid currentColor; border-radius: 2px; transform: rotate(-3.5deg);
+  font-size: 10px; line-height: 1.25; letter-spacing: .12em; text-align: center; opacity: .9;
+  box-shadow: inset 0 0 0 3px rgba(10,18,24,.55); }
+.nd-stamp.sm { width: 44px; height: 44px; font-size: 9px; }
+.nd-stamp .big { display: block; font-size: 15px; font-weight: 700; letter-spacing: .06em; }
+
+.nd-rule { height: 1px; background: var(--nd-line); margin: var(--nd-sp-2) 0; border: 0; }
+
+/* ── 数值行 ── */
+.nd-meter { display: flex; align-items: center; gap: var(--nd-sp-2); }
+.nd-meter .k { font-size: var(--nd-fs-xs); letter-spacing: var(--nd-ls-label); color: var(--nd-text-mute); white-space: nowrap;
+  display: inline-flex; align-items: center; gap: var(--nd-sp-1); }
+.nd-meter .v { font-size: var(--nd-fs-sm); color: var(--nd-text-dim); font-variant-numeric: var(--nd-num); white-space: nowrap; }
+.nd-meter .v.big { font-size: var(--nd-fs-md); color: var(--nd-text); font-weight: 600; }
+.nd-meter .g { font-size: var(--nd-fs-xs); letter-spacing: .1em; white-space: nowrap; display: inline-flex; align-items: center; gap: var(--nd-sp-1); }
+.nd-meter .g.is-safe { color: var(--nd-safe); }
+.nd-meter .g.is-warn { color: var(--nd-warn); }
+.nd-meter .g.is-seal { color: var(--nd-seal); }
+
+/* ══ SURFACE 1：状态栏 ══ */
+.nd-status { width: min(100%, var(--nd-panel-w)); display: flex; flex-direction: column; gap: var(--nd-sp-3); }
+.nd-now { display: flex; flex-wrap: wrap; gap: var(--nd-sp-3) var(--nd-sp-5); align-items: flex-start; }
+.nd-now .grp { display: flex; flex-direction: column; gap: var(--nd-sp-1); min-width: 0; }
+.nd-now .grp.grow { flex: 1 1 180px; }
+.nd-now .val { font-size: var(--nd-fs-md); color: var(--nd-text); }
+.nd-now .val .sep { color: var(--nd-text-mute); margin: 0 var(--nd-sp-1); }
+/* 面纱格：用斜线遮罩表现「被遮住」 */
+.nd-veil { display: inline-flex; align-items: center; gap: var(--nd-sp-2); padding: 2px var(--nd-sp-2);
+  border: 1px solid currentColor; background-image: var(--nd-hatch); }
+.nd-veil.is-ok { color: var(--nd-text-dim); }
+.nd-veil.is-warn { color: var(--nd-warn); }
+.nd-veil.is-seal { color: var(--nd-seal); }
+
+.nd-mem { display: flex; flex-direction: column; gap: var(--nd-sp-2); }
+/* 五人条：v2 加纹理、角标与内阴影 */
+.nd-card { position: relative; background-color: var(--nd-bg-panel);
+  background-image: repeating-linear-gradient(0deg, var(--nd-grid-line) 0 1px, transparent 1px 9px),
+                    repeating-linear-gradient(90deg, var(--nd-grid-line) 0 1px, transparent 1px 9px);
+  border-top: 1px solid var(--nd-line); border-left: 3px solid var(--nd-line);
+  box-shadow: inset 0 1px 0 rgba(232,228,217,.035); }
+.nd-card::after { content: ""; position: absolute; right: 5px; top: 5px; width: 8px; height: 8px;
+  border-right: 1px solid var(--nd-line-strong); border-top: 1px solid var(--nd-line-strong); opacity: .7; }
+.nd-card.is-warn { border-left-color: var(--nd-warn); }
+.nd-card.is-seal { border-left-color: var(--nd-seal); }
+.nd-card.is-safe { border-left-color: var(--nd-safe); }
+.nd-card .in { display: flex; gap: var(--nd-sp-3); padding: var(--nd-sp-3); }
+/* 档案照片框：v2 增加双线内框（相片感） */
+.nd-face { width: 44px; height: 52px; flex: none; border: 1px solid var(--nd-line-strong); background: var(--nd-bg-raise);
+  display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: var(--nd-text-mute);
+  position: relative; box-shadow: inset 0 0 0 3px rgba(10,18,24,.55); }
+.nd-face img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 15%; }
+.nd-card.is-safe .nd-face { color: var(--nd-safe); border-color: rgba(127,169,143,.5); }
+.nd-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--nd-sp-2); }
+.nd-idline { display: flex; align-items: baseline; gap: var(--nd-sp-2); flex-wrap: wrap; }
+.nd-idline .net { font-size: var(--nd-fs-lg); font-weight: 700; letter-spacing: var(--nd-ls-name); }
+.nd-idline .real { font-size: var(--nd-fs-sm); color: var(--nd-safe); }
+.nd-idline .real.unknown { color: var(--nd-text-mute); letter-spacing: .2em; }
+.nd-mask { display: flex; gap: var(--nd-sp-1); flex-wrap: wrap; }
+.nd-stage { display: flex; align-items: center; gap: var(--nd-sp-2); }
+.nd-stage .stg { font-size: var(--nd-fs-sm); color: var(--nd-text); }
+.nd-stage .stg.is-safe { color: var(--nd-safe); }
+.nd-stage .stg.is-seal { color: var(--nd-seal); }
+
+/* ══ SURFACE 2：群像档案页 ══ */
+.nd-overlay { position: relative; background-color: var(--nd-bg-deep);
+  background-image: radial-gradient(760px 420px at 84% -8%, rgba(127,169,143,.055), transparent 62%),
+                    radial-gradient(620px 420px at -10% 28%, rgba(212,96,79,.045), transparent 60%);
+  border: 1px solid var(--nd-line); padding: var(--nd-sp-5); overflow: hidden; }
+.nd-overlay::before { content: ""; position: absolute; inset: 0; background-image: var(--nd-noise); opacity: .05; pointer-events: none; }
+.nd-overlay > * { position: relative; z-index: 1; }
+.nd-nav { display: flex; align-items: center; gap: var(--nd-sp-4); border-bottom: 1px solid var(--nd-line); padding-bottom: var(--nd-sp-3); margin-bottom: var(--nd-sp-4); flex-wrap: wrap; }
+.nd-nav .ttl { font-size: var(--nd-fs-lg); font-weight: 700; letter-spacing: var(--nd-ls-label); display: flex; align-items: center; gap: var(--nd-sp-2); }
+.nd-nav .ttl::before { content: "▍"; color: var(--nd-text-mute); font-weight: 400; }
+.nd-nav .meta { font-size: var(--nd-fs-xs); color: var(--nd-text-mute); letter-spacing: .06em; }
+.nd-nav .spacer { margin-left: auto; }
+.nd-hub { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--nd-sp-3); }
+.nd-hubcard { position: relative; background-color: var(--nd-bg-panel);
+  background-image: repeating-linear-gradient(0deg, var(--nd-grid-line) 0 1px, transparent 1px 9px),
+                    repeating-linear-gradient(90deg, var(--nd-grid-line) 0 1px, transparent 1px 9px);
+  border-top: 1px solid var(--nd-line); border-left: 3px solid var(--nd-line);
+  padding: var(--nd-sp-3); display: flex; flex-direction: column; gap: var(--nd-sp-2);
+  cursor: pointer; text-decoration: none; color: inherit; transition: transform .15s ease, border-left-color .15s ease; }
+.nd-hubcard:hover { border-left-color: var(--nd-safe); transform: translateY(-2px); }
+.nd-hubcard.is-safe { border-left-color: var(--nd-safe); }
+.nd-hubcard .top { display: flex; align-items: center; gap: var(--nd-sp-3); min-width: 0; }
+.nd-hubcard .go { margin-top: auto; padding-top: var(--nd-sp-2); border-top: 1px solid var(--nd-line-soft);
+  font-size: var(--nd-fs-xs); color: var(--nd-text-mute); letter-spacing: .16em; text-align: right; }
+.nd-hubcard:hover .go { color: var(--nd-safe); }
+
+.nd-arch { display: grid; grid-template-columns: 5fr 4fr; gap: var(--nd-sp-4); }
+.nd-arch > .left, .nd-arch > .right { min-width: 0; display: flex; flex-direction: column; gap: var(--nd-sp-3); }
+/* 立绘位：v2 加斜角裁切与内框，像档案相片 */
+.nd-portrait { min-height: 380px; position: relative; display: flex; align-items: center; justify-content: center;
+  background-color: var(--nd-bg-panel);
+  background-image: linear-gradient(160deg, rgba(232,228,217,.045), transparent 55%),
+                    repeating-linear-gradient(0deg, var(--nd-grid-line) 0 1px, transparent 1px 9px);
+  border: 1px solid var(--nd-line-strong);
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px)); }
+.nd-portrait .glyph { font-size: 88px; font-weight: 700; color: rgba(124,141,151,.42); }
+.nd-portrait .cap { position: absolute; left: var(--nd-sp-3); bottom: var(--nd-sp-3); font-size: var(--nd-fs-xs);
+  color: var(--nd-text-mute); letter-spacing: var(--nd-ls-label); }
+.nd-ptitle { font-size: var(--nd-fs-md); font-weight: 600; letter-spacing: var(--nd-ls-label); color: var(--nd-text);
+  display: flex; align-items: center; gap: var(--nd-sp-2); }
+.nd-ptitle::before { content: "◇"; font-size: 9px; color: var(--nd-text-mute); font-weight: 400; }
+.nd-ptitle small { font-size: var(--nd-fs-xs); color: var(--nd-text-mute); letter-spacing: .08em; font-weight: 400; }
+.nd-kv { display: grid; grid-template-columns: 92px 1fr; gap: var(--nd-sp-2) var(--nd-sp-3); margin-top: var(--nd-sp-3); font-size: var(--nd-fs-sm); }
+.nd-kv dt { color: var(--nd-text-mute); letter-spacing: .14em; font-size: var(--nd-fs-xs); display: flex; align-items: center; gap: var(--nd-sp-1); }
+.nd-kv dd { margin: 0; color: var(--nd-text); }
+.nd-facts { display: flex; flex-wrap: wrap; gap: var(--nd-sp-2); margin-top: var(--nd-sp-3); }
+
+/* ── 窄屏模拟框 ── */
+.nd-narrow { width: 320px; max-width: 100%; border: 1px dashed var(--nd-line); padding: var(--nd-sp-3); background: var(--nd-bg-deep); }
+.nd-narrow .nd-status { width: 100%; }
+
+/* ── 预览页辅助 ── */
+.nd-swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--nd-sp-2); }
+.nd-sw { border: 1px solid var(--nd-line); padding: var(--nd-sp-2) var(--nd-sp-3); font-size: var(--nd-fs-xs); letter-spacing: .04em; background: var(--nd-bg-panel); }
+.nd-sw .chip { height: 26px; margin-bottom: var(--nd-sp-2); border: 1px solid rgba(255,255,255,.06); }
+.nd-sw .nm { color: var(--nd-text); }
+.nd-sw .hex { color: var(--nd-text-mute); font-family: var(--nd-mono); font-size: 10px; }
+.nd-sw .ratio { color: var(--nd-text-dim); font-variant-numeric: var(--nd-num); }
+.nd-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--nd-sp-3); }
+.nd-note { font-size: var(--nd-fs-xs); color: var(--nd-text-mute); line-height: 1.9; }
+.nd-note b { color: var(--nd-text-dim); }
+.nd-iconrow { display: flex; flex-wrap: wrap; gap: var(--nd-sp-4); align-items: center; }
+.nd-iconrow .cell { display: flex; flex-direction: column; align-items: center; gap: var(--nd-sp-1);
+  font-size: 10px; color: var(--nd-text-mute); letter-spacing: .08em; padding: var(--nd-sp-2); border: 1px solid var(--nd-line-soft); min-width: 74px; }
+.nd-iconrow .cell .nd-ico { width: 22px; height: 22px; color: var(--nd-text-dim); }
+/* ══ 青冷主题的结构层：斜切 + 内辉 + 扫描线 ══
+   注意这层改的是「形」不只是「色」，且**只在主题 B 生效**——
+   主题 A 保持直角档案卡。这就是把主题做成令牌层的回报：形与色可以分别切。
+   手法说明：斜切角、内描边、扫描线均属业界通用视觉手法，非任何站点私有资产。 */
+.nd-scope[data-theme="cyan"] .nd-panel,
+.nd-scope[data-theme="cyan"] .nd-card {
+  border-left-width: 2px;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  box-shadow: inset 0 0 0 1px rgba(95,212,224,.12), inset 0 2px 12px rgba(6,14,18,.55);
+}
+.nd-scope[data-theme="cyan"] .nd-card::after,
+.nd-scope[data-theme="cyan"] .nd-panel::after { display: none; }   /* 已斜切，不再需要角标记号 */
+.nd-scope[data-theme="cyan"] .nd-face {
+  border-color: rgba(95,212,224,.35); box-shadow: inset 0 0 0 3px rgba(6,14,18,.7); }
+.nd-scope[data-theme="cyan"] .nd-card.is-safe .nd-face { border-color: rgba(116,192,138,.5); }
+.nd-scope[data-theme="cyan"] .nd-veil { box-shadow: inset 0 0 0 1px rgba(95,212,224,.22); }
+.nd-scope[data-theme="cyan"] .nd-hubcard:hover { border-left-color: var(--nd-cyan); }
+.nd-scope[data-theme="cyan"] .nd-portrait {
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px)); }
+/* 扫描线：只在档案页叠一层，状态栏不叠（避免影响扫读） */
+.nd-scope[data-theme="cyan"] .nd-overlay::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .3; z-index: 2;
+  background-image: repeating-linear-gradient(0deg, rgba(95,212,224,.06) 0 1px, transparent 1px 4px); }
+
+.hidden { display: none !important; }
+@media (prefers-reduced-motion: reduce) { .nd-hubcard { transition: none; } .nd-hubcard:hover { transform: none; } }
+</style>
+</head>
+<body>
+<div class="nd-scope" data-theme="archive">
+<div class="nd-pv">
+
+  <div class="nd-pv-h">
+    <h1>夜航档案 · v3</h1>
+    <span class="sub">但为君故 · 沉吟至今 ｜ 双主题令牌 ｜ 单文件 · 零外部依赖</span>
+    <span style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <button class="nd-tag" data-theme-btn="archive" style="cursor:pointer;background:none">A · 夜航档案（暖）</button>
+      <button class="nd-tag" data-theme-btn="cyan" style="cursor:pointer;background:none">B · 青冷</button>
+    </span>
+  </div>
+  <p class="nd-note">
+    v2 在 v1 的令牌与类名上增加了<b>质感层</b>（面板细网格、档案页噪点、面纱斜线遮罩）与<b>装饰构件</b>（角标、印章、条上刻度、内阴影），
+    并引入 <b>8 枚 Lucide 图标</b>（内联 SVG，ISC 许可）。所有质感均为 CSS/内联 SVG 自绘，<b>不引用任何远程资源</b>。
+  </p>
+
+  <!-- ══════ 一、色板 ══════ -->
+  <section class="nd-pv-sec">
+    <h2>一、色板（对面板底 #101A22 的实测对比度）</h2>
+    <p class="note">深墨蓝底 + 档案纸白字；没有“强调色”，强调由排版与装饰承担。</p>
+    <div class="nd-swatches">
+      <div class="nd-sw"><div class="chip" style="background:#0A1218"></div><div class="nm">bg-deep</div><div class="hex">#0A1218</div><div class="ratio">页面底</div></div>
+      <div class="nd-sw"><div class="chip" style="background:#101A22"></div><div class="nm">bg-panel</div><div class="hex">#101A22</div><div class="ratio">面板底</div></div>
+      <div class="nd-sw"><div class="chip" style="background:#16232C"></div><div class="nm">bg-raise</div><div class="hex">#16232C</div><div class="ratio">条槽</div></div>
+      <div class="nd-sw"><div class="chip" style="background:#33454F"></div><div class="nm">line-strong</div><div class="hex">#33454F</div><div class="ratio">框线（v2 新增）</div></div>
+      <div class="nd-sw"><div class="chip" style="background:#E8E4D9"></div><div class="nm">text · 档案纸白</div><div class="hex">#E8E4D9</div><div class="ratio">13.86:1 · AAA</div></div>
+      <div class="nd-sw"><div class="chip" style="background:#A8B4BA"></div><div class="nm">text-dim</div><div class="hex">#A8B4BA</div><div class="ratio">8.30:1 · AAA</div></div>
+      <div class="nd-sw"><div class="chip" style="background:#7C8D97"></div><div class="nm">text-mute</div><div class="hex">#7C8D97</div><div class="ratio">5.13:1 · AA</div></div>
+      <div class="nd-sw"><div class="chip" style="background:#DCB045"></div><div class="nm">warn · 注意</div><div class="hex">#DCB045</div><div class="ratio">8.67:1 · AAA</div></div>
+      <div class="nd-sw"><div class="chip" style="background:#D4604F"></div><div class="nm">seal · 危险</div><div class="hex">#D4604F</div><div class="ratio">4.68:1 · AA</div></div>
+      <div class="nd-sw"><div class="chip" style="background:#7FA98F"></div><div class="nm">safe · 正向</div><div class="hex">#7FA98F</div><div class="ratio">6.68:1 · AA</div></div>
+    </div>
+  </section>
+
+  <!-- ══════ 二、图标（v2 新增） ══════ -->
+  <section class="nd-pv-sec">
+    <h2>二、开原图标（Lucide · 内联 SVG · ISC）</h2>
+    <p class="note">用 <code>currentColor</code> 继承状态色，无需多套图标。状态栏只用前三枚做字段标签，其余留给档案页。</p>
+    <div class="nd-panel plain">
+      <div class="nd-iconrow">
+        <span class="cell"><svg class="nd-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>clock 时间</span>
+        <span class="cell"><svg class="nd-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>map-pin 地点</span>
+        <span class="cell"><svg class="nd-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>eye-off 面纱</span>
+        <span class="cell"><svg class="nd-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>eye 暴露度</span>
+        <span class="cell"><svg class="nd-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z"/></svg>zap 异能</span>
+        <span class="cell"><svg class="nd-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/><path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg>heart-pulse 代价</span>
+        <span class="cell"><svg class="nd-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 19a4 4 0 00-8 0"/><path d="M16 10h2"/><path d="M16 14h2"/><circle cx="9" cy="12" r="3"/><rect x="2" y="5" width="20" height="14" rx="2"/></svg>id-card 身份</span>
+        <span class="cell"><svg class="nd-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>search 线索</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ 三、状态栏 ══════ -->
+  <section class="nd-pv-sec">
+    <h2>三、状态栏（完整版 · 现状一条 + 五人五条）</h2>
+    <p class="note">质感与角标只作背景层；数值行不加图标，保证扫读速度。面纱格用斜线遮罩表现「被遮住」。</p>
+
+    <div class="nd-status">
+      <div class="nd-panel is-warn">
+        <div class="nd-now">
+          <div class="grp">
+            <span class="nd-label"><svg class="nd-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>时间地点</span>
+            <span class="val">纪年第 3 日<span class="sep">·</span>傍晚<span class="sep">·</span>江北<span class="sep">·</span>市图书馆新馆</span>
+          </div>
+          <div class="grp">
+            <span class="nd-label"><svg class="nd-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>面纱</span>
+            <span class="nd-veil is-warn"><span class="nd-shape s-warn"></span>有裂痕</span>
+          </div>
+          <div class="grp grow">
+            <span class="nd-label"><svg class="nd-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z"/></svg>你自己</span>
+            <span class="val">初醒<span class="sep">·</span>异能未定型</span>
+          </div>
+          <div class="nd-stamp sm" style="color:var(--nd-warn)"><span>面纱<br><span class="big">裂</span></span></div>
+        </div>
+        <hr class="nd-rule">
+        <div style="display:flex; flex-direction:column; gap:var(--nd-sp-2)">
+          <div class="nd-meter">
+            <span class="k"><svg class="nd-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/><path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg>代价</span>
+            <span class="nd-bar"><i class="is-warn" style="width:34%"></i></span>
+            <span class="v">34 / 100</span>
+            <span class="g is-warn"><span class="nd-shape s-warn"></span> 明显</span>
+          </div>
+          <div class="nd-meter">
+            <span class="k"><svg class="nd-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>暴露度</span>
+            <span class="nd-bar"><i style="width:14%"></i></span>
+            <span class="v">14 / 100</span>
+            <span class="g is-safe"><span class="nd-shape s-safe"></span> 轻微</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="nd-mem">
+        <div class="nd-card is-safe">
+          <div class="in">
+            <div class="nd-face">花</div>
+            <div class="nd-body">
+              <div class="nd-idline"><span class="net">佐久间眠</span><span class="real">藤原花奈</span></div>
+              <div class="nd-mask">
+                <span class="nd-tag is-safe"><span class="nd-shape s-safe"></span>身份已知</span>
+                <span class="nd-tag is-safe"><span class="nd-shape s-safe"></span>觉醒者已知</span>
+              </div>
+              <div class="nd-stage">
+                <span class="nd-bar"><i style="width:62%"></i></span>
+                <span class="v" style="font-size:var(--nd-fs-sm);color:var(--nd-text-dim);font-variant-numeric:var(--nd-num)">好感 +24</span>
+                <span class="stg is-safe">信任</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="nd-card">
+          <div class="in">
+            <div class="nd-face">珍</div>
+            <div class="nd-body">
+              <div class="nd-idline"><span class="net">珍惜才配拥有</span><span class="real unknown">？？？</span></div>
+              <div class="nd-mask">
+                <span class="nd-tag is-off"><span class="nd-shape s-normal"></span>身份未揭晓</span>
+                <span class="nd-tag is-off"><span class="nd-shape s-normal"></span>觉醒者未知</span>
+              </div>
+              <div class="nd-stage">
+                <span class="nd-bar"><i style="width:55%"></i></span>
+                <span class="v" style="font-size:var(--nd-fs-sm);color:var(--nd-text-dim);font-variant-numeric:var(--nd-num)">好感 +10</span>
+                <span class="stg">熟悉</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="nd-card">
+          <div class="in">
+            <div class="nd-face">秋</div>
+            <div class="nd-body">
+              <div class="nd-idline"><span class="net">cojack</span><span class="real unknown">？？？</span></div>
+              <div class="nd-mask"><span class="nd-tag is-off"><span class="nd-shape s-normal"></span>未相遇</span></div>
+              <div class="nd-stage">
+                <span class="nd-bar"><i style="width:50%"></i></span>
+                <span class="v" style="font-size:var(--nd-fs-sm);color:var(--nd-text-mute);font-variant-numeric:var(--nd-num)">好感 0</span>
+                <span class="stg" style="color:var(--nd-text-mute)">陌生人</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="nd-card is-warn">
+          <div class="in">
+            <div class="nd-face">笙</div>
+            <div class="nd-body">
+              <div class="nd-idline"><span class="net">楚楚的笙_unofficial</span><span class="real">楚羽笙</span></div>
+              <div class="nd-mask">
+                <span class="nd-tag is-safe"><span class="nd-shape s-safe"></span>身份已知</span>
+                <span class="nd-tag is-off"><span class="nd-shape s-normal"></span>觉醒者未知</span>
+                <span class="nd-tag is-warn"><span class="nd-shape s-warn"></span>刚用过能力</span>
+              </div>
+              <div class="nd-stage">
+                <span class="nd-bar"><i class="is-warn" style="width:44%"></i></span>
+                <span class="v" style="font-size:var(--nd-fs-sm);color:var(--nd-text-dim);font-variant-numeric:var(--nd-num)">好感 −12</span>
+                <span class="stg">线上好友</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="nd-card is-seal">
+          <div class="in">
+            <div class="nd-face">诺</div>
+            <div class="nd-body">
+              <div class="nd-idline"><span class="net">冯诺依曼</span><span class="real">诺薇拉</span></div>
+              <div class="nd-mask">
+                <span class="nd-tag is-safe"><span class="nd-shape s-safe"></span>身份已知</span>
+                <span class="nd-tag is-seal"><span class="nd-shape s-danger"></span>关系破裂</span>
+              </div>
+              <div class="nd-stage">
+                <span class="nd-bar"><i class="is-neg" style="width:18%"></i></span>
+                <span class="v" style="font-size:var(--nd-fs-sm);color:var(--nd-seal);font-variant-numeric:var(--nd-num)">好感 −67</span>
+                <span class="stg is-seal">不相往来</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ 四、群像档案页 ══════ -->
+  <section class="nd-pv-sec">
+    <h2>四、群像档案页（点跳板卡切换）</h2>
+    <p class="note">档案页是“可以装饰”的地方——图标、印章、斜角相框都用在这里；状态栏则保持克制。</p>
+
+    <div class="nd-overlay">
+      <div class="nd-nav">
+        <span class="ttl">但为君故</span>
+        <span class="meta">五人 · 已揭面具 2 / 10 · 纪年第 3 日 · 傍晚</span>
+        <span class="spacer"></span>
+        <button class="nd-tag" style="cursor:pointer;background:none">收起 ×</button>
+      </div>
+
+      <div class="nd-hub" id="nd-hub">
+        <a class="nd-hubcard is-safe" data-arch="0">
+          <span class="top"><span class="nd-face">花</span>
+            <span style="min-width:0"><span style="display:block;font-size:var(--nd-fs-md);font-weight:700;letter-spacing:var(--nd-ls-name)">佐久间眠</span>
+            <span style="display:block;font-size:var(--nd-fs-xs);color:var(--nd-safe);letter-spacing:.1em">已揭晓 · 藤原花奈</span></span></span>
+          <span class="nd-mask"><span class="nd-tag is-safe"><span class="nd-shape s-safe"></span>身份已知</span><span class="nd-tag is-safe"><span class="nd-shape s-safe"></span>觉醒者已知</span></span>
+          <span class="nd-stage"><span class="nd-bar"><i style="width:62%"></i></span><span style="font-size:var(--nd-fs-sm);color:var(--nd-text-dim);font-variant-numeric:var(--nd-num)">+24</span></span>
+          <span class="nd-stage"><span class="stg is-safe">信任</span></span>
+          <span class="go">打开档案 ◇</span>
+        </a>
+        <a class="nd-hubcard" data-arch="1">
+          <span class="top"><span class="nd-face">珍</span>
+            <span style="min-width:0"><span style="display:block;font-size:var(--nd-fs-md);font-weight:700;letter-spacing:var(--nd-ls-name)">珍惜才配拥有</span>
+            <span style="display:block;font-size:var(--nd-fs-xs);color:var(--nd-text-mute);letter-spacing:.1em">身份未揭晓</span></span></span>
+          <span class="nd-mask"><span class="nd-tag is-off"><span class="nd-shape s-normal"></span>身份未揭晓</span></span>
+          <span class="nd-stage"><span class="nd-bar"><i style="width:55%"></i></span><span style="font-size:var(--nd-fs-sm);color:var(--nd-text-dim);font-variant-numeric:var(--nd-num)">+10</span></span>
+          <span class="nd-stage"><span class="stg">熟悉</span></span>
+          <span class="go">打开档案 ◇</span>
+        </a>
+        <a class="nd-hubcard" data-arch="2">
+          <span class="top"><span class="nd-face">秋</span>
+            <span style="min-width:0"><span style="display:block;font-size:var(--nd-fs-md);font-weight:700;letter-spacing:var(--nd-ls-name)">cojack</span>
+            <span style="display:block;font-size:var(--nd-fs-xs);color:var(--nd-text-mute);letter-spacing:.1em">未相遇</span></span></span>
+          <span class="nd-mask"><span class="nd-tag is-off"><span class="nd-shape s-normal"></span>未相遇</span></span>
+          <span class="nd-stage"><span class="nd-bar"><i style="width:50%"></i></span><span style="font-size:var(--nd-fs-sm);color:var(--nd-text-mute);font-variant-numeric:var(--nd-num)">0</span></span>
+          <span class="nd-stage"><span class="stg" style="color:var(--nd-text-mute)">陌生人</span></span>
+          <span class="go">打开档案 ◇</span>
+        </a>
+      </div>
+
+      <div id="nd-arch" class="hidden">
+        <p style="margin:0 0 var(--nd-sp-3)"><a href="#" id="nd-back" style="color:var(--nd-text-mute);font-size:var(--nd-fs-xs);letter-spacing:var(--nd-ls-label);text-decoration:none">◇ 返回群像</a></p>
+        <div class="nd-arch">
+          <div class="left">
+            <div class="nd-portrait"><span class="glyph" id="nd-glyph">花</span><span class="cap" id="nd-cap">立绘位（身份已揭晓）</span></div>
+          </div>
+          <div class="right">
+            <div class="nd-panel is-safe">
+              <div class="nd-ptitle">档案 <small>DOSSIER</small></div>
+              <dl class="nd-kv">
+                <dt><svg class="nd-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 19a4 4 0 00-8 0"/><path d="M16 10h2"/><path d="M16 14h2"/><circle cx="9" cy="12" r="3"/><rect x="2" y="5" width="20" height="14" rx="2"/></svg>网名</dt><dd id="nd-net">佐久间眠</dd>
+                <dt>身份</dt><dd id="nd-real" style="color:var(--nd-safe)">藤原花奈（已揭晓）</dd>
+                <dt>关系</dt><dd id="nd-stage">信任</dd>
+                <dt>登场</dt><dd id="nd-met">已线下相遇</dd>
+              </dl>
+              <hr class="nd-rule">
+              <div class="nd-ptitle">面具 <small>MASK</small></div>
+              <div class="nd-facts" id="nd-mask">
+                <span class="nd-tag is-safe"><span class="nd-shape s-safe"></span>身份已知</span>
+                <span class="nd-tag is-safe"><span class="nd-shape s-safe"></span>觉醒者已知</span>
+              </div>
+            </div>
+            <div class="nd-panel">
+              <div class="nd-ptitle">好感 <small>FAVOR</small></div>
+              <div class="nd-meter" style="margin-top:var(--nd-sp-3)">
+                <span class="nd-bar"><i style="width:62%"></i></span>
+                <span class="v">+24 / 100</span>
+                <span class="g is-safe"><span class="nd-shape s-safe"></span> 信任</span>
+              </div>
+            </div>
+            <div class="nd-panel">
+              <div class="nd-ptitle">状态 <small>STATUS</small></div>
+              <div class="nd-facts" id="nd-status">
+                <span class="nd-tag is-off"><span class="nd-shape s-normal"></span>在册 · 档案残缺</span>
+                <span class="nd-tag"><span class="nd-shape s-normal"></span>常驻型 · 留白</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ 五、状态变体全览 ══════ -->
+  <section class="nd-pv-sec">
+    <h2>五、状态变体全览（实现时要逐档对得上）</h2>
+    <p class="note">颜色只是辅助——每一档<b>都必须</b>同时带文字与形状。</p>
+    <div class="nd-grid2">
+      <div class="nd-panel">
+        <div class="nd-label">代价 / 暴露度 · 四档</div>
+        <div style="display:flex;flex-direction:column;gap:var(--nd-sp-3);margin-top:var(--nd-sp-3)">
+          <div class="nd-meter"><span class="k">0–20</span><span class="nd-bar"><i style="width:12%"></i></span><span class="v">12</span><span class="g is-safe"><span class="nd-shape s-safe"></span> 轻微</span></div>
+          <div class="nd-meter"><span class="k">21–50</span><span class="nd-bar"><i class="is-warn" style="width:36%"></i></span><span class="v">36</span><span class="g is-warn"><span class="nd-shape s-warn"></span> 明显</span></div>
+          <div class="nd-meter"><span class="k">51–80</span><span class="nd-bar"><i class="is-warn" style="width:66%"></i></span><span class="v">66</span><span class="g is-warn"><span class="nd-shape s-warn"></span> 严重</span></div>
+          <div class="nd-meter"><span class="k">81–100</span><span class="nd-bar"><i class="is-seal" style="width:92%"></i></span><span class="v">92</span><span class="g is-seal"><span class="nd-shape s-danger"></span> 危险</span></div>
+        </div>
+      </div>
+      <div class="nd-panel">
+        <div class="nd-label"><svg class="nd-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>面纱 · 三态（只降不升）</div>
+        <div style="display:flex;flex-direction:column;gap:var(--nd-sp-3);margin-top:var(--nd-sp-3)">
+          <div class="nd-meter"><span class="k">完好</span><span class="nd-veil is-ok"><span class="nd-shape s-normal"></span>完好</span><span class="g" style="color:var(--nd-text-mute)">无确凿证据流出</span></div>
+          <div class="nd-meter"><span class="k">有裂痕</span><span class="nd-veil is-warn"><span class="nd-shape s-warn"></span>有裂痕</span><span class="g" style="color:var(--nd-text-mute)">传闻或未坐实的目击</span></div>
+          <div class="nd-meter"><span class="k">局部暴露</span><span class="nd-veil is-seal"><span class="nd-shape s-danger"></span>局部暴露</span><span class="g" style="color:var(--nd-text-mute)">某场所普通人已确知</span></div>
+        </div>
+      </div>
+      <div class="nd-panel">
+        <div class="nd-label">面具状态 · 四态（取代旧卡的迷雾珠）</div>
+        <div class="nd-facts" style="margin-top:var(--nd-sp-3)">
+          <span class="nd-tag is-off"><span class="nd-shape s-normal"></span>未相遇</span>
+          <span class="nd-tag"><span class="nd-shape s-normal"></span>已相遇</span>
+          <span class="nd-tag is-safe"><span class="nd-shape s-safe"></span>身份已知</span>
+          <span class="nd-tag is-safe"><span class="nd-shape s-safe"></span>觉醒者已知</span>
+        </div>
+      </div>
+      <div class="nd-panel">
+        <div class="nd-label">关系阶段 · 六档（文字为主，颜色弱提示）</div>
+        <div class="nd-facts" style="margin-top:var(--nd-sp-3)">
+          <span class="nd-tag is-off">陌生人</span><span class="nd-tag is-off">认识</span><span class="nd-tag is-off">熟悉</span>
+          <span class="nd-tag is-safe">信任</span><span class="nd-tag is-safe">亲密</span><span class="nd-tag is-seal">破裂</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ 六、窄容器 ══════ -->
+  <section class="nd-pv-sec">
+    <h2>六、窄容器模拟（320px）</h2>
+    <p class="note">状态栏必须在这个宽度下仍能读——文字换行、不溢出、不横向滚动。</p>
+    <div class="nd-narrow">
+      <div class="nd-status">
+        <div class="nd-panel is-warn">
+          <div class="nd-now">
+            <div class="grp"><span class="nd-label"><svg class="nd-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>时间地点</span><span class="val">纪年第 3 日 · 傍晚 · 江北 · 市图书馆新馆</span></div>
+            <div class="grp"><span class="nd-label">面纱</span><span class="nd-veil is-warn"><span class="nd-shape s-warn"></span>有裂痕</span></div>
+          </div>
+          <hr class="nd-rule">
+          <div class="nd-meter"><span class="k">代价</span><span class="nd-bar"><i class="is-warn" style="width:34%"></i></span><span class="v">34</span></div>
+        </div>
+        <div class="nd-card is-safe">
+          <div class="in">
+            <div class="nd-face">花</div>
+            <div class="nd-body">
+              <div class="nd-idline"><span class="net">佐久间眠</span><span class="real">藤原花奈</span></div>
+              <div class="nd-mask"><span class="nd-tag is-safe"><span class="nd-shape s-safe"></span>身份已知</span></div>
+              <div class="nd-stage"><span class="nd-bar"><i style="width:62%"></i></span><span class="v" style="font-size:var(--nd-fs-sm);color:var(--nd-text-dim)">+24</span><span class="stg is-safe">信任</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="nd-card">
+          <div class="in">
+            <div class="nd-face">珍</div>
+            <div class="nd-body">
+              <div class="nd-idline"><span class="net">珍惜才配拥有</span><span class="real unknown">？？？</span></div>
+              <div class="nd-mask"><span class="nd-tag is-off"><span class="nd-shape s-normal"></span>身份未揭晓</span></div>
+              <div class="nd-stage"><span class="nd-bar"><i style="width:55%"></i></span><span class="v" style="font-size:var(--nd-fs-sm);color:var(--nd-text-dim)">+10</span><span class="stg">熟悉</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="nd-note" style="margin-top:var(--nd-sp-6);border-top:1px solid var(--nd-line);padding-top:var(--nd-sp-3)">
+    <b>v2 待你确认</b>：① 质感是否过头（细网格 + 噪点 + 角标，可以逐项关掉）；② 印章标记（右上那枚「面纱·裂」）要不要保留，或只放在档案页；
+    ③ 状态栏字段标签加图标后是否变慢好看；④ 面纱格的斜线遮罩效果。另外：<b>图标许可（ISC）与署名文本</b>需要在 <code>creator_notes</code> 里落地。
+  </p>
+
+</div>
+</div>
+
+<script>
+(function () {
+  /* 主题切换（预览页外壳，不属于卡内实现） */
+  var scope = document.querySelector('.nd-scope');
+  document.querySelectorAll('[data-theme-btn]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      scope.setAttribute('data-theme', btn.getAttribute('data-theme-btn'));
+    });
+  });
+
+  var DATA = [
+    { glyph:'花', cap:'立绘位（身份已揭晓）', net:'佐久间眠', real:'藤原花奈（已揭晓）', realCls:'', stage:'信任', stgCls:'is-safe', met:'已线下相遇',
+      mask:'<span class="nd-tag is-safe"><span class="nd-shape s-safe"></span>身份已知</span><span class="nd-tag is-safe"><span class="nd-shape s-safe"></span>觉醒者已知</span>',
+      favor:62, favorTxt:'+24 / 100',
+      status:'<span class="nd-tag is-off"><span class="nd-shape s-normal"></span>在册 · 档案残缺</span><span class="nd-tag"><span class="nd-shape s-normal"></span>常驻型 · 留白</span>' },
+    { glyph:'珍', cap:'头像位（身份未揭晓）', net:'珍惜才配拥有', real:'？？？（未揭晓）', realCls:'unknown', stage:'熟悉', stgCls:'', met:'已线下相遇',
+      mask:'<span class="nd-tag is-off"><span class="nd-shape s-normal"></span>身份未揭晓</span><span class="nd-tag is-off"><span class="nd-shape s-normal"></span>觉醒者未知</span>',
+      favor:55, favorTxt:'+10 / 100',
+      status:'<span class="nd-tag is-off"><span class="nd-shape s-normal"></span>在册 · 抗拒配合</span><span class="nd-tag"><span class="nd-shape s-normal"></span>主动型 · 威压</span>' },
+    { glyph:'秋', cap:'未相遇 · 无立绘', net:'cojack', real:'？？？（未揭晓）', realCls:'unknown', stage:'陌生人', stgCls:'', met:'未相遇',
+      mask:'<span class="nd-tag is-off"><span class="nd-shape s-normal"></span>未相遇</span>',
+      favor:50, favorTxt:'0 / 100',
+      status:'<span class="nd-tag is-off"><span class="nd-shape s-normal"></span>在册 · 配合</span><span class="nd-tag"><span class="nd-shape s-normal"></span>主动型 · 缝</span>' }
+  ];
+  var hub = document.getElementById('nd-hub');
+  var arch = document.getElementById('nd-arch');
+  if (!hub || !arch) return;
+
+  function show(i) {
+    var d = DATA[i];
+    if (!d) return;
+    document.getElementById('nd-glyph').textContent = d.glyph;
+    document.getElementById('nd-cap').textContent = d.cap;
+    document.getElementById('nd-net').textContent = d.net;
+    var real = document.getElementById('nd-real');
+    real.textContent = d.real;
+    real.className = d.realCls || '';
+    real.style.color = d.realCls ? 'var(--nd-text-mute)' : 'var(--nd-safe)';
+    document.getElementById('nd-stage').textContent = d.stage;
+    document.getElementById('nd-met').textContent = d.met;
+    document.getElementById('nd-mask').innerHTML = d.mask;
+    arch.querySelector('.nd-meter .nd-bar > i').style.width = d.favor + '%';
+    arch.querySelector('.nd-meter .v').textContent = d.favorTxt;
+    document.getElementById('nd-status').innerHTML = d.status;
+    hub.classList.add('hidden');
+    arch.classList.remove('hidden');
+  }
+  hub.addEventListener('click', function (e) {
+    var card = e.target.closest ? e.target.closest('.nd-hubcard') : null;
+    if (!card) return;
+    e.preventDefault();
+    show(Number(card.getAttribute('data-arch')));
+  });
+  document.getElementById('nd-back').addEventListener('click', function (e) {
+    e.preventDefault();
+    arch.classList.add('hidden');
+    hub.classList.remove('hidden');
+  });
+})();
+</script>
+</body>
+</html>
