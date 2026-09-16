@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "authoritySchema": "tavernweave/project-orchestration/v1",
+  "projectId": "urban-esper-sandbox",
+  "title": "都市异能群像沙盒",
+  "profile": "single-blueprint",
+  "state": "brainstorm-candidate",
+  "authorityFile": "总设计案.md",
+  "nextFile": "NEXT.md",
+  "blueprintPolicy": {
+    "masterFile": "项目实现步骤蓝图.md",
+    "maxDepth": 1,
+    "maxChildren": 0,
+    "runtimePersistentBlueprintBudget": 0,
+    "blueprints": [
+      {
+        "id": "BP-ROOT",
+        "path": "项目实现步骤蓝图.md",
+        "parentId": null,
+        "depth": 1,
+        "status": "candidate"
+      }
+    ]
+  },
+  "runtimeRefinementPolicy": {
+    "trigger": "observed-problem-or-failed-exit-condition",
+    "maxDepth": 1,
+    "maxOpenBranches": 1,
+    "persistent": false,
+    "mayExpandProductScope": false,
+    "mustReturnToParent": true
+  },
+  "runtimeRefinements": [],
+  "discussionDirections": [],
+  "frontendDecision": {
+    "recommended": "undecided",
+    "fit": "conditional",
+    "reason": "pending brainstorm",
+    "fallback": "text-first",
+    "reopenWhen": "project type and host constraints are confirmed",
+    "driverOverride": false,
+    "prototypeGateRequired": false,
+    "realHostGateRequired": false
+  },
+  "acceptance": {
+    "automated": "not-run",
+    "staticPreview": "not-run",
+    "realHost": "pending",
+    "driver": {
+      "status": "pending",
+      "source": "driver"
+    }
+  }
+}

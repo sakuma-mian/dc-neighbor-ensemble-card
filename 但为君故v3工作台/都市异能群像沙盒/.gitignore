@@ -1,0 +1,9 @@
+﻿# 显示给用户的第 0 版说明
+*.tmp
+*.log
+*.bak
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
