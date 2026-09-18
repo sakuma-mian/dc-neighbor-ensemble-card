@@ -1,0 +1,243 @@
+{
+  "name": "MVU 接线检测",
+  "description": "一次性的接线检测卡，用来在真实 SillyTavern 里验证 MVU 变量链是否工作。世界书请单独导入「但为君故V3」并绑定到本卡。",
+  "personality": "（检测卡，无角色设定）",
+  "scenario": "南江市澜浦区的旧巷口，雨刚停。",
+  "first_mes": "【接线检测 · 第 1 轮】\n\n雨刚停。你站在南江市澜浦区一条旧巷的巷口，衣服半湿，身上没有证件、没有手机，也想不起半小时前自己在哪儿。\n\n巷子另一头传来一声闷响——像什么重物砸在铁皮上。紧接着，你的掌心开始发烫。\n\n——\n\n（这一张是 **MVU 接线检测卡**，不是正式剧情：世界书与变量结构都取自「但为君故V3」项目骨架，只有这段场景是临时的。照常扮演就好。\n**唯一的要求**：请在回复末尾按世界书里的规则输出 `<UpdateVariable>` 块，那是这次检测唯一要看的东西。）",
+  "mes_example": "",
+  "creatorcomment": "由 骨架/生成检测卡.mjs 自动生成 · 改骨架后重新生成即可",
+  "avatar": "none",
+  "talkativeness": "0.5",
+  "fav": false,
+  "tags": [
+    "MVU",
+    "接线检测",
+    "自检"
+  ],
+  "spec": "chara_card_v3",
+  "spec_version": "3.0",
+  "create_date": "2026-09-18",
+  "data": {
+    "name": "MVU 接线检测",
+    "description": "一次性的接线检测卡，用来在真实 SillyTavern 里验证 MVU 变量链是否工作。世界书请单独导入「但为君故V3」并绑定到本卡。",
+    "personality": "（检测卡，无角色设定）",
+    "scenario": "南江市澜浦区的旧巷口，雨刚停。",
+    "first_mes": "【接线检测 · 第 1 轮】\n\n雨刚停。你站在南江市澜浦区一条旧巷的巷口，衣服半湿，身上没有证件、没有手机，也想不起半小时前自己在哪儿。\n\n巷子另一头传来一声闷响——像什么重物砸在铁皮上。紧接着，你的掌心开始发烫。\n\n——\n\n（这一张是 **MVU 接线检测卡**，不是正式剧情：世界书与变量结构都取自「但为君故V3」项目骨架，只有这段场景是临时的。照常扮演就好。\n**唯一的要求**：请在回复末尾按世界书里的规则输出 `<UpdateVariable>` 块，那是这次检测唯一要看的东西。）",
+    "mes_example": "",
+    "creator_notes": "【怎么用】\n1. 先导入世界书 骨架/但为君故V3.json；\n2. 再导入这张卡；\n3. 把「但为君故V3」绑成这张卡的 primary 世界书（MVU 只扫卡绑定的世界书）；\n4. 开一个新聊天，按 F12 看控制台——应出现 [MVU] 本体已加载 / 接口就绪 / 找到 1 条 [initvar]；\n5. 随手发一条消息，检查回复末尾有没有 <UpdateVariable> 块、变量有没有变化。\n\n【它不是正式卡】世界书与变量结构取自项目骨架，剧情是临时的。检测完可以删。",
+    "system_prompt": "",
+    "post_history_instructions": "",
+    "tags": [
+      "MVU",
+      "接线检测",
+      "自检"
+    ],
+    "creator": "骨架/生成检测卡.mjs",
+    "character_version": "1.0",
+    "alternate_greetings": [],
+    "group_only_greetings": [],
+    "extensions": {
+      "talkativeness": "0.5",
+      "fav": false,
+      "world": "",
+      "depth_prompt": {
+        "prompt": "",
+        "depth": 4,
+        "role": "system"
+      },
+      "regex_scripts": [
+        {
+          "id": "urban-esper-varblock-analysis",
+          "scriptName": "[MVU] 状态记录 · 本轮说明",
+          "findRegex": "/<analysis>\\s*([\\s\\S]*?)\\s*<\\/analysis>/gi",
+          "replaceString": "<div class=\"mvud-a\">$1</div>",
+          "trimStrings": [],
+          "placement": [
+            2
+          ],
+          "disabled": false,
+          "markdownOnly": true,
+          "promptOnly": false,
+          "runOnEdit": false,
+          "substituteRegex": 0,
+          "minDepth": 0,
+          "maxDepth": null
+        },
+        {
+          "id": "urban-esper-varblock-patch",
+          "scriptName": "[MVU] 状态记录 · 补丁",
+          "findRegex": "/<json_?patch>\\s*([\\s\\S]*?)\\s*<\\/json_?patch>/gi",
+          "replaceString": "<div class=\"mvud-j\">$1</div>",
+          "trimStrings": [],
+          "placement": [
+            2
+          ],
+          "disabled": false,
+          "markdownOnly": true,
+          "promptOnly": false,
+          "runOnEdit": false,
+          "substituteRegex": 0,
+          "minDepth": 0,
+          "maxDepth": null
+        },
+        {
+          "id": "urban-esper-varblock-done",
+          "scriptName": "[MVU] 状态记录 · 完成",
+          "findRegex": "/<UpdateVariable(?:variable)?>\\s*([\\s\\S]*?)\\s*<\\/UpdateVariable(?:variable)?>/gi",
+          "replaceString": "<details class=\"mvud\"><summary><span class=\"mvud-k\">状态记录</span><span class=\"mvud-s\">本轮已同步</span></summary><div class=\"mvud-b\">$1</div></details><style>\n.mvud{margin:10px 0;border:1px solid #2e3a3f;border-left:3px solid #5b8a8f;border-radius:2px;background:#12181b;font-size:12.5px;line-height:1.6;color:#9fb0b3}\n.mvud>summary{cursor:pointer;padding:6px 11px;letter-spacing:.06em;color:#7f9397;list-style:none;user-select:none}\n.mvud>summary::-webkit-details-marker{display:none}\n.mvud>summary::before{content:'▸';margin-right:7px;color:#5b8a8f}\n.mvud[open]>summary::before{content:'▾'}\n.mvud-k{color:#a8bcbf}\n.mvud-s{float:right;color:#5b8a8f;font-size:11.5px}\n.mvud-b{padding:6px 12px 11px;border-top:1px solid #23302f;white-space:pre-wrap;word-break:break-word;color:#8ea0a3;max-height:260px;overflow-y:auto}\n.mvud-a{color:#9fb0b3}\n.mvud-j{margin-top:6px;padding-top:6px;border-top:1px solid #23302f;font-family:Consolas,Menlo,monospace;font-size:11.5px;color:#7f9397;word-break:break-all}\n</style>",
+          "trimStrings": [],
+          "placement": [
+            2
+          ],
+          "disabled": false,
+          "markdownOnly": true,
+          "promptOnly": false,
+          "runOnEdit": false,
+          "substituteRegex": 0,
+          "minDepth": 0,
+          "maxDepth": null
+        },
+        {
+          "id": "urban-esper-varblock-streaming",
+          "scriptName": "[MVU] 状态记录 · 写入中",
+          "findRegex": "/<UpdateVariable(?:variable)?>(?![\\s\\S]*<\\/UpdateVariable(?:variable)?>)\\s*[\\s\\S]*$/gi",
+          "replaceString": "<div class=\"mvuw\"><span class=\"mvuw-d\"></span>状态记录 · 写入中</div><style>\n.mvuw{margin:10px 0;padding:7px 12px;border:1px dashed #2e3a3f;border-left:3px solid #5b8a8f;border-radius:2px;background:#12181b;font-size:12.5px;letter-spacing:.06em;color:#7f9397}\n.mvuw-d{display:inline-block;width:6px;height:6px;margin-right:8px;vertical-align:middle;border-radius:50%;background:#5b8a8f;animation:mvuw-pulse 1.1s ease-in-out infinite}\n@keyframes mvuw-pulse{0%,100%{opacity:.22}50%{opacity:1}}\n</style>",
+          "trimStrings": [],
+          "placement": [
+            2
+          ],
+          "disabled": false,
+          "markdownOnly": true,
+          "promptOnly": false,
+          "runOnEdit": false,
+          "substituteRegex": 0,
+          "minDepth": 0,
+          "maxDepth": null
+        },
+        {
+          "id": "urban-esper-varblock-fallback",
+          "scriptName": "[MVU] 状态记录 · 杂标签兜底",
+          "findRegex": "/<\\/?(?:analysis|json_?patch|reasoning|thinking|thought|update_?variable(?:variable)?)\\b[^>]*>/gi",
+          "replaceString": "",
+          "trimStrings": [],
+          "placement": [
+            2
+          ],
+          "disabled": false,
+          "markdownOnly": true,
+          "promptOnly": false,
+          "runOnEdit": false,
+          "substituteRegex": 0,
+          "minDepth": 0,
+          "maxDepth": null
+        },
+        {
+          "id": "urban-esper-dialog-display",
+          "scriptName": "[正文] 对话块",
+          "findRegex": "/<d\\s+s\\s*=\\s*[\"']([^\"']+)[\"']\\s*>([\\s\\S]*?)<\\/d>/gi",
+          "replaceString": "<div class=\"espd\"><span class=\"espd-n\">$1</span><span class=\"espd-t\">$2</span></div><style>\n.espd{margin:9px 0;padding:3px 0 3px 13px;border-left:2px solid rgba(128,150,155,.55);border-radius:0 2px 2px 0;background:rgba(128,150,155,.075);line-height:1.8}\n.espd-n{display:block;margin-bottom:1px;font-size:11.5px;letter-spacing:.16em;color:currentColor;opacity:.85}\n.espd-t{display:block}\n</style>",
+          "trimStrings": [],
+          "placement": [
+            2
+          ],
+          "disabled": false,
+          "markdownOnly": true,
+          "promptOnly": false,
+          "runOnEdit": false,
+          "substituteRegex": 0,
+          "minDepth": null,
+          "maxDepth": null
+        },
+        {
+          "id": "urban-esper-dialog-fallback",
+          "scriptName": "[正文] 对话块 · 兜底清残骸",
+          "findRegex": "/<\\/?d\\b[^>]*>/gi",
+          "replaceString": "",
+          "trimStrings": [],
+          "placement": [
+            2
+          ],
+          "disabled": false,
+          "markdownOnly": true,
+          "promptOnly": false,
+          "runOnEdit": false,
+          "substituteRegex": 0,
+          "minDepth": null,
+          "maxDepth": null
+        },
+        {
+          "id": "urban-esper-varblock-prompt-trim",
+          "scriptName": "[MVU] 变量块 · 旧楼层不进提示词",
+          "findRegex": "/<UpdateVariable(?:variable)?>[\\s\\S]*?<\\/UpdateVariable(?:variable)?>/gi",
+          "replaceString": "",
+          "trimStrings": [],
+          "placement": [
+            2
+          ],
+          "disabled": false,
+          "markdownOnly": false,
+          "promptOnly": true,
+          "runOnEdit": true,
+          "substituteRegex": 0,
+          "minDepth": 6,
+          "maxDepth": null
+        },
+        {
+          "id": "urban-esper-placeholder-hide",
+          "scriptName": "[MVU] 状态栏占位符 · 不进提示词",
+          "findRegex": "/<StatusPlaceHolderImpl\\s*\\/>/g",
+          "replaceString": "",
+          "trimStrings": [],
+          "placement": [
+            2
+          ],
+          "disabled": false,
+          "markdownOnly": false,
+          "promptOnly": true,
+          "runOnEdit": false,
+          "substituteRegex": 0,
+          "minDepth": null,
+          "maxDepth": null
+        }
+      ],
+      "tavern_helper": {
+        "scripts": [
+          {
+            "type": "script",
+            "enabled": true,
+            "name": "① MVU 本体加载器",
+            "id": "mvu-wire-check-loader",
+            "content": "// ============================================================================\n// MVU 本体加载器（卡内脚本 · 排第 1 位）\n// 项目：都市异能群像沙盒\n// 建立：2026-09-18（接线）\n// ============================================================================\n//\n// 【这个脚本干什么】\n// 把 MVU 框架本体（MagicalAstrogy/MagVarUpdate）拉下来并跑起来。\n// 它**只管加载**，不定义变量结构——结构在「变量结构约束.js」里。\n//\n// 【为什么必须单独有这一层】\n// MVU 不是酒馆自带的扩展，是卡自己带的一段脚本：它负责解析模型输出的\n// <UpdateVariable> 块、对变量打补丁、再派发生命周期事件。\n// 少了它，「变量结构约束.js」里的 Schema 写得再对也没人调用\n// —— 这正是本项目 2026-09-18 之前的状态。\n//\n// 【三个前置条件（缺一个就跑不起来）】\n// 1. 酒馆必须装「酒馆助手」（JS-Slash-Runner）。\n//    本脚本与结构约束脚本用到的 z / eventOn / getLorebookEntries /\n//    registerVariableSchema 全由它提供。\n// 2. 需要联网。bundle.js 有 573 KB，从 jsdelivr 拉；下面两个镜像互为备份。\n//    2026-09-18 实测：两个镜像从本机都可达（约 0.6–1.4 秒）。\n// 3. **必须有一条开场白**。MVU 在没有任何消息时会直接中止，并提示\n//    「需要有开场白才能初始化变量」——这是官方源码里写死的判断，不是配置问题。\n//\n// 【执行顺序】\n// 本脚本要排在「变量结构约束.js」**之前**（酒馆助手按脚本数组顺序执行）。\n// 顺序反了也不会崩：结构约束只负责注册监听器，事件由本脚本拉下来的本体派发。\n// ============================================================================\n\nconst MVU_镜像 = [\n  'https://testingcf.jsdelivr.net/gh/MagicalAstrogy/MagVarUpdate/artifact/bundle.js',\n  'https://cdn.jsdelivr.net/gh/MagicalAstrogy/MagVarUpdate/artifact/bundle.js',\n];\n\nlet 已加载镜像 = '';\nfor (const 地址 of MVU_镜像) {\n  try {\n    await import(地址);\n    已加载镜像 = 地址;\n    console.log('[MVU] 本体已加载：' + 地址);\n    break;\n  } catch (错误) {\n    console.warn('[MVU] 这个镜像拉不动，换下一个：' + 地址, 错误);\n  }\n}\n\nif (!已加载镜像) {\n  console.error(\n    '[MVU] 两个镜像都没拉下来 —— 变量系统不会工作。\\n' +\n      '  处理办法：确认网络能访问 jsdelivr；或改用酒馆助手把 bundle.js 存成本地脚本再引。'\n  );\n}\n\n// 等 Mvu 接口挂到全局。拉不到时这里会超时退出，但不会卡住酒馆。\ntry {\n  if (typeof waitGlobalInitialized === 'function') {\n    await waitGlobalInitialized('Mvu');\n    console.log('[MVU] 接口就绪。');\n  } else {\n    const 起点 = Date.now();\n    while (!window.Mvu && Date.now() - 起点 < 8000) {\n      await new Promise((下一步) => setTimeout(下一步, 50));\n    }\n    console.log(window.Mvu ? '[MVU] 接口就绪（轮询等到的）。' : '[MVU] 等接口超时。');\n  }\n} catch (错误) {\n  console.warn('[MVU] 等接口时出错：', 错误);\n}\n\n// ---------------------------------------------------------------------------\n// 接线自检：三件\"不报错、但功能全坏\"的事，主动喊出来\n// ---------------------------------------------------------------------------\n// 这三条都不会让脚本崩，只会让变量静默地不工作——所以值得花几行把它们说清楚。\ntry {\n  // ① 一条消息都没有 → MVU 拒绝初始化（官方源码里写死的判断）\n  if (typeof SillyTavern !== 'undefined' && Array.isArray(SillyTavern.chat) && SillyTavern.chat.length === 0) {\n    console.error('[MVU] 当前一条消息都没有 —— MVU 不会初始化变量。先让这张卡带一条开场白。');\n  }\n\n  // ② 卡没绑世界书 → 初始变量和更新规则都读不到\n  if (typeof getCharLorebooks === 'function') {\n    const 书 = await getCharLorebooks();\n    const 名单 = [书?.primary, ...(Array.isArray(书?.additional) ? 书.additional : [])].filter(Boolean);\n\n    if (名单.length === 0) {\n      console.warn('[MVU] 这张卡没有绑定世界书 —— [initvar] 初始变量和 [mvu_update] 更新规则都读不到。');\n    } else if (typeof getLorebookEntries === 'function') {\n      // ③ 世界书里没有 [initvar] 条目 → stat_data 会建成空的，模型看到的变量表也是空的\n      let 初始变量条数 = 0;\n      for (const 书名 of 名单) {\n        for (const 条目 of await getLorebookEntries(书名)) {\n          // 认领规则抄自 MVU 本体源码：comment 转小写后包含 '[initvar]'\n          if (条目?.comment?.toLowerCase().includes('[initvar]')) 初始变量条数++;\n        }\n      }\n      if (初始变量条数 === 0) {\n        console.error('[MVU] 绑定的世界书里找不到 [initvar] 条目 —— 变量表会是空的。');\n      } else {\n        console.log(`[MVU] 找到 ${初始变量条数} 条 [initvar] 初始变量，绑定世界书：${名单.join('、')}`);\n      }\n    }\n  }\n} catch (错误) {\n  console.warn('[MVU] 自检时出错（不影响运行）：', 错误);\n}\n",
+            "info": "拉取并启动 MVU 本体（MagicalAstrogy/MagVarUpdate）。必须排在结构约束之前。",
+            "button": {
+              "enabled": false,
+              "buttons": []
+            },
+            "data": {},
+            "export_with": {
+              "data": false,
+              "button": false
+            }
+          },
+          {
+            "type": "script",
+            "enabled": true,
+            "name": "② 变量结构约束",
+            "id": "mvu-wire-check-schema",
+            "content": "// ============================================================================\n// MVU Zod 变量结构约束\n// 项目：都市异能群像沙盒\n// 依据：B1_变量更新规则.md（v1.0.0）+ 变量表字段台账（第04阶存档 §3）\n// ============================================================================\n//\n// 【这个文件干什么】\n// 定义变量的\"合法结构\"。模型写出的值如果不符合这里的规定，会被自动修正或兜底，\n// 而不是让坏数据静默传下去。\n//\n// 【三条铁律，改动前务必看】\n// 1. z 是酒馆助手注入的全局变量，**绝对不要** import zod，也**不要**从网上另引一份。\n//    否则跨实例的类型检查会全部失败、parse 会静默产出 NaN 或 undefined\n//    ——不报错，但数据全是坏的。\n// 2. registerMvuSchema 必须在 $() 回调里调用（等 DOM 就绪），不能在模块顶层直接调。\n// 3. 对象字段一律用 .prefault({})，不要用 .default({})。\n//    区别：prefault 的后备值会经过 transform 处理，default 会绕过它。\n//\n// 【一个容易踩的坑，写在这里免得后人重复踩】\n// .prefault() 定义在 ZodEffects 上，调用它会返回一个 _ZodEffects 实例。\n// 而 _ZodEffects 上**没有** prefault 方法——所以形式正确的写法是\n//     z.string().transform(...).prefault(x)     ← 可以\n//     z.number().transform(...).prefault(x).prefault(y)  ← 第二个无效，别这么写\n// 第二个不会报错，只会让默认值静默失效。本文件里所有带 transform 的字段，\n// prefault 都只写一次。\n//\n// 【层级说明】\n// schema 对应 stat_data 层级，必须以 z.object(...) 开头。\n// ============================================================================\n\n// ---------------------------------------------------------------------------\n// 第 0 步 · 依赖：registerMvuSchema（必须先于下面的 Schema 执行）\n// ---------------------------------------------------------------------------\n// 【它是什么】把下面这份 Schema 接到 MVU 上的那座桥——没有它，Schema 写得再对\n//   也没人接收，所有结构校验形同虚设。\n// 【它在哪】不在酒馆助手里，在 StageDog/tavern_resource 的 mvu_zod.js 里，要从 CDN 拉。\n//   ⚠️ 本项目此前的真实状态就是：Schema 写好了 257 行，却没有这一行来源，\n//      所以它一次都没有生效过。这是 2026-09-18 接线时才发现的。\n// 【为什么这里可以顶层 await】酒馆助手的卡内脚本按 ES module 执行，\n//   星月／交错两张生产卡用的也是这个写法。\nlet registerMvuSchema;\ntry {\n  if (typeof z === 'undefined') {\n    throw new Error('全局 z 不存在——酒馆助手没装或版本低于 v3.3.2');\n  }\n  ({ registerMvuSchema } = await import(\n    'https://cdn.jsdelivr.net/gh/StageDog/tavern_resource/dist/util/mvu_zod.js'\n  ));\n} catch (镜像一错误) {\n  try {\n    ({ registerMvuSchema } = await import(\n      'https://testingcf.jsdelivr.net/gh/StageDog/tavern_resource/dist/util/mvu_zod.js'\n    ));\n  } catch (镜像二错误) {\n    console.error(\n      '[变量结构约束] registerMvuSchema 拉取失败 —— 本文件的 Schema 不会生效。\\n' +\n        '  可能原因：两个 CDN 都不可达，或酒馆助手未安装／版本过旧。\\n' +\n        '  镜像一报错：',\n      镜像一错误,\n      '\\n  镜像二报错：',\n      镜像二错误\n    );\n  }\n}\n\n// ---------------------------------------------------------------------------\n// 工具箱\n// ---------------------------------------------------------------------------\n\n// 带限幅的数值字段。\n// 为什么需要它：模型很容易写出 1000 这种越界值。限幅比事后修数据便宜。\nfunction 数值字段(最小值, 最大值, 默认值) {\n  return z\n    .coerce.number()\n    .transform(v => {\n      if (!Number.isFinite(v)) return 默认值;\n      return Math.min(最大值, Math.max(最小值, v));\n    })\n    .prefault(默认值);\n}\n\n// 枚举字段：值不在候选里就落回第一个候选。\n// 这么设计是为了\"不炸\"——模型自己发明一个等级时，数据会回到安全值，\n// 而不是让整个变量结构校验失败。\nfunction 枚举字段(选项) {\n  return z\n    .string()\n    .transform(v => (选项.includes(v) ? v : 选项[0]))\n    .catch(选项[0])\n    .prefault(选项[0]);\n}\n\n// ---------------------------------------------------------------------------\n// 候选值：集中在这里，方便你以后改\n// ---------------------------------------------------------------------------\n// 这些对应第 1~5 阶冻结的设定条款。改动时请同步更新：\n//   - 存档/第01阶-世界观与异能基调.md\n//   - 存档/第04阶-首版范围与交付物.md（字段台账）\n//   - 存档/第05阶-战力与战斗评定.md（战力与战斗评定）\n//   - 骨架/变量更新规则.txt（给模型看的那份说明）\nconst 身份记录选项 = ['未登记', '被登记', '被通缉'];\nconst 异化状态选项 = ['未涉足', '进行中', '已异化'];\nconst 血统认知选项 = ['未知', '存疑', '已知'];\nconst 位阶选项 = ['不入流', '中游', '高位', '传闻极强', '深不可测'];\nconst 已知程度选项 = ['未知', '有传闻', '已确认'];\n\n// ---------------------------------------------------------------------------\n// 战力系统的常量（第 05 阶冻结，D-048 ~ D-062）\n// ---------------------------------------------------------------------------\n// 【这里为什么要有常量】战力值是\"算出来的\"，不是\"随便写的\"。\n// 把权重和档位边界放在这里集中一处，你以后调整数值时只需要改这里，\n// 不用在规则文本和 schema 之间来回对表。\n// 注意：这些常量**不写进变量**，只用于说明与校验；实际计算由模型按规则执行。\n\n// 基础战斗力公式（仅作注释与自检用，模型不执行这段代码）：\n//   基础战斗力 = 掌控度×50 + 承载上限×50 + 异化修正 + 血统加成\nconst 战力权重_每点掌控或承载 = 50;\n\n// 异化修正（三级；异化者能突破常规上限，但代价不可逆）\nconst 异化修正表 = { 未涉足: 0, 进行中: 100, 已异化: 200 };\n\n// 血统加成：**待定，首版固定为 0**。\n// 为什么先记 0：C-12 规定玩家\"血统不明\"，血统体系尚未由驾驶员写出。\n// 等血统体系定稿后，把这里改成实际的加分表，并同步 +1 变量结构版本。\nconst 血统加成表 = { 未知: 0, 存疑: 0, 已知: 0 };\n\n// 位阶档位与数值边界（D-055）。五档黑话沿用第 1 阶冻结的用词，只重划边界。\n// 数组元素形如 [档位名, 下界, 上界]，闭区间。\nconst 位阶数值档位 = [\n  ['不入流', 0, 199],\n  ['中游', 200, 399],\n  ['高位', 400, 599],\n  ['传闻极强', 600, 799],\n  ['深不可测', 800, 1300],\n];\n\n// 战力上限（理论上限 1300 = 掌控10 + 承载10 + 异化200 + 血统300）\nconst 战力上限 = 1300;\n\n// 故事线进度允许的阶段标记（可自由扩展，仅作文档用）\n// 说明：这里**不做**成枚举校验。理由：故事线阶段是你会不断补充的内容，\n// 做成硬枚举会让\"你新增一个阶段名\"变成\"需要改 schema\"。\nconst 故事线进度 = z.string().prefault('');\n\n// ---------------------------------------------------------------------------\n// 玩家层\n// ---------------------------------------------------------------------------\nconst 玩家 = z\n  .object({\n    // 觉醒后固定的那个能力。一经确定不再改变（可以提升用法与规模，不会变成另一个能力）\n    能力本质: z.string().prefault(''),\n\n    // 常规成长的两个维度\n    // 【第 05 阶变更】值域从 0–5 扩到 0–10（D-054），与\"数值整体 ×10 膨胀\"配套。\n    // 单点权重 = 50 分，所以这两项各自的满分是 500，两项合计 1000。\n    掌控度: 数值字段(0, 10, 1),\n    承载上限: 数值字段(0, 10, 1),\n\n    // 基础战斗力：战力系统的核心数值（第 05 阶新增，D-053 / D-055）\n    // 它是**投影字段**：掌控度与承载上限是权威源，战力值由它们加总而来。\n    //   = 掌控度×50 + 承载上限×50 + 异化修正 + 血统加成\n    // 写者只有模型，且**只在跃迁时更新**（平时每轮不许动它）。\n    // 为什么显式记一个\"算得出来\"的值：状态栏要直接读它、模型判定战力时要直接用它，\n    // 而\"让模型每轮现算\"比\"存一个数\"更容易出错（模型不擅长算术）。\n    // 上限 1300 = 掌控10(500) + 承载10(500) + 异化(200) + 血统(300)。\n    基础战力: 数值字段(0, 1300, 100),\n\n    // 代价：内在损耗（伤自己）\n    内在损耗: 数值字段(0, 100, 0),\n\n    // 代价：外在暴露（一个数值，会随时间或休整回落）\n    // 决定 D-046：暴露合并为一个数值\n    暴露程度: 数值字段(0, 100, 0),\n\n    // 社会身份：不会自己回落。\n    // 与\"暴露程度\"的区别：暴露程度是\"你藏得怎么样\"，身份记录是\"你在档案里是什么人\"。\n    身份记录: 枚举字段(身份记录选项),\n\n    // 异化路线（极少数人让能力发生质变的危险路线）\n    异化状态: 枚举字段(异化状态选项),\n\n    // 血统认知：玩家对自己出身的了解程度（高血统者觉醒前与普通人无异）\n    血统认知: 枚举字段(血统认知选项),\n\n    // 当前状态：用可变的键值对，只放\"过期了就能删\"的临时状态\n    // 例：{ '身上有伤': '左臂', '正在被谁找': '管理局' }\n    当前状态: z.record(z.string(), z.string()).prefault({}),\n\n    // 圈内代号：别人给你起的名字。空 = 你还没有名声\n    圈内代号: z.string().prefault(''),\n  })\n  .prefault({});\n\n// ---------------------------------------------------------------------------\n// 单个角色的状态\n// ---------------------------------------------------------------------------\n// 注意：key 用真名（唯一、稳定）；圈内代号放记录内的字段，因为代号会变、会骗人。\nconst 单角色 = z\n  .object({\n    // 故事线进度：位置由它推导，不单独记\"他现在在哪\"（位置最容易过期）\n    故事线进度,\n\n    // 位阶三件套：这张卡的命门。缺任何一项，\"实测数据会骗人\"这个设定就废了\n    位阶传闻: 枚举字段(位阶选项),\n    位阶真实: 枚举字段(位阶选项),\n    玩家已知程度: 枚举字段(已知程度选项),\n\n    // 与玩家的账：用标签而不用数值。\n    // \"欠他一次\"比\"好感度 73\"信息量大得多，模型也更不容易用错。\n    与玩家的账: z.array(z.string()).prefault([]),\n\n    // 玩家已经掌握的他哪些底牌\n    被掌握的底牌: z.array(z.string()).prefault([]),\n\n    // 圈内代号（会变、会骗人，所以不做主键）\n    圈内代号: z.string().prefault(''),\n\n    // 是否已和玩家打过交道（决定这个条目要不要参与开局匹配）\n    已接触: z.boolean().prefault(false),\n  })\n  .prefault({});\n\n// ---------------------------------------------------------------------------\n// 世界层\n// ---------------------------------------------------------------------------\nconst 势力状态 = z\n  .object({\n    管理局: z.string().prefault(''),\n    家族: z.string().prefault(''),\n    散人网: z.string().prefault(''),\n    没落旧家: z.string().prefault(''),\n  })\n  .prefault({});\n\n// 事件线保留的最大条数。\n// 为什么必须设上限：这个数组会随时间无限增长，是**最容易让提示词悄悄膨胀**的地方。\nconst 事件线上限 = 12;\n\nconst 世界 = z\n  .object({\n    // 游戏内日期，所有\"上次\"\"几天前\"的时间锚\n    日期: z.string().prefault(''),\n\n    // 事件线：只记结果，不记过程。超出上限时保留最近的若干条。\n    事件线: z\n      .array(z.string())\n      .transform(数组 => (数组.length > 事件线上限 ? 数组.slice(-事件线上限) : 数组))\n      .prefault([]),\n\n    // 三足鼎立 + 那个没落旧家，各一句话\n    势力状态,\n\n    // 当前引力源：现在有谁在找玩家（对应\"每个方向都有人等你\"）\n    当前引力源: z.array(z.string()).prefault([]),\n\n    // 结局进度（对应连载式更新）\n    结局进度: z.string().prefault(''),\n\n    // 变量结构版本：【只有脚本能写，模型绝不写】\n    // 你以后新增字段时，脚本靠它判断要不要给老存档补默认值。\n    // 每改一次变量结构就把它 +1，否则老玩家的存档会缺字段而错乱。\n    //\n    // 【版本沿革】\n    //   1.0  第 04 阶：58 字段基线\n    //   2.0  第 05 阶：掌控度／承载上限值域 0–5 → 0–10；新增 /玩家/基础战力\n    //       迁移动作：老存档缺\"基础战力\"时补 100，并按公式重算一次\n    变量结构版本: z.string().prefault('2.0'),\n  })\n  .prefault({});\n\n// ---------------------------------------------------------------------------\n// 顶层结构\n// ---------------------------------------------------------------------------\n// .passthrough() 的作用：模型偶尔会写入这里没声明的字段。\n// 不加它，那些字段会被自动剥掉（数据静默丢失）；加了它，额外字段会被保留。\n// 注意：passthrough 在深层嵌套里的行为未经验证（规范列为悬案 P7），\n// 所以不要把\"依赖额外字段存活\"当成关键机制。\nconst Schema = z\n  .object({\n    玩家,\n    角色: z.record(z.string(), 单角色).prefault({}),\n    世界,\n  })\n  .passthrough();\n\n// ---------------------------------------------------------------------------\n// 注册\n// ---------------------------------------------------------------------------\n// 必须在 $() 回调中调用：需要等 DOM 就绪。\n// 依赖没拉到时不能直接调用，否则整个脚本抛错、连后面的报错都看不到——\n// 所以这里做一次守卫，让失败变成一条明确的日志。\n$(() => {\n  if (typeof registerMvuSchema !== 'function') {\n    console.error('[变量结构约束] 跳过注册：registerMvuSchema 不可用（原因见本文件开头的报错）。');\n    return;\n  }\n  registerMvuSchema(Schema);\n});\n",
+            "info": "本项目真实的 Zod 变量结构（玩家／角色／世界三层）。原件在 骨架/变量结构约束.js。",
+            "button": {
+              "enabled": false,
+              "buttons": []
+            },
+            "data": {},
+            "export_with": {
+              "data": false,
+              "button": false
+            }
+          }
+        ]
+      }
+    }
+  }
+}
